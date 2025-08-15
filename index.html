@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasmanian Ecosystem Maintenance | CIII CEM</title>
+    <style>
+        :root {
+            --forest-green: #2c5e1a;
+            --coastal-blue: #3a6ea5;
+            --moorland-brown: #8b6b4d;
+            --highlight-yellow: #f2c94c;
+            --text-light: #f8f9fa;
+            --text-dark: #333333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://example.com/tasmanian-wilderness.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-light);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+        
+        nav {
+            background-color: var(--forest-green);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: var(--coastal-blue);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            overflow: hidden;
+        }
+        
+        h2 {
+            color: var(--forest-green);
+            border-bottom: 2px solid var(--moorland-brown);
+            padding-bottom: 0.5rem;
+        }
+        
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .card {
+            flex: 1 1 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 {
+            color: var(--coastal-blue);
+            margin-top: 0;
+        }
+        
+        .image-placeholder {
+            background-color: #eee;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        
+        button {
+            background-color: var(--forest-green);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--coastal-blue);
+        }
+        
+        .simulation-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .simulation-controls {
+            flex: 1 1 300px;
+        }
+        
+        .simulation-output {
+            flex: 2 1 400px;
+            min-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--forest-green);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .ecosystem-visual {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .species {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .native {
+            background-color: var(--forest-green);
+        }
+        
+        .invasive {
+            background-color: #c0392b;
+        }
+        
+        .quiz-container {
+            margin-top: 1rem;
+        }
+        
+        .question {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .options {
+            margin-top: 0.5rem;
+        }
+        
+        .option {
+            margin: 0.5rem 0;
+        }
+        
+        .feedback {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .checklist-item {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist-item input {
+            margin-right: 0.5rem;
+        }
+        
+        footer {
+            background-color: var(--forest-green);
+            color: var(--text-light);
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .glossary-term {
+            font-weight: bold;
+            color: var(--coastal-blue);
+            cursor: help;
+            border-bottom: 1px dotted var(--coastal-blue);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text-dark);
+            color: var(--text-light);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin: 0.2rem 0;
+            }
+            
+            .simulation-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tasmanian Ecosystem Maintenance</h1>
+        <p class="subtitle">Certificate III in Conservation and Ecosystem Management</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#key-concepts">Key Concepts</a></li>
+            <li><a href="#case-studies">Case Studies</a></li>
+            <li><a href="#field-techniques">Field Techniques</a></li>
+            <li><a href="#simulation">Simulation Tool</a></li>
+            <li><a href="#quiz">Knowledge Check</a></li>
+            <li><a href="#resources">Resources</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="introduction">
+            <h2>Introduction to Tasmanian Ecosystems</h2>
+            <div class="image-placeholder">
+                [Tasmanian landscape image]
+            </div>
+            <p>Welcome to the Tasmanian Ecosystem Maintenance training module. This program is designed to provide you with the knowledge and skills needed to work effectively in conservation and ecosystem management across Tasmania's unique environments.</p>
+            
+            <p>Tasmania's ecosystems range from coastal heathlands to alpine moorlands, each with distinct conservation challenges. As a conservation worker, you'll play a vital role in maintaining these ecosystems for future generations.</p>
+            
+            <h3>Why Tasmania is Special</h3>
+            <ul>
+                <li>Home to ancient Gondwanan species like the <span class="glossary-term">myrtle beech<span class="tooltiptext">Nothofagus cunninghamii, a Gondwanan relic species</span></span></li>
+                <li>Contains some of the most intact temperate rainforests in the world</li>
+                <li>Unique alpine ecosystems found nowhere else</li>
+                <li>Critical habitat for endangered species like the Tasmanian devil</li>
+            </ul>
+        </section>
+        
+        <section id="key-concepts">
+            <h2>Key Ecological Concepts</h2>
+            <div class="card-container">
+                <div class="card">
+                    <h3>Biodiversity</h3>
+                    <div class="image-placeholder">
+                        [Tasmanian species collage]
+                    </div>
+                    <p>Tasmania's biodiversity is supported by its isolation and varied landscapes. Maintaining species diversity ensures ecosystem resilience.</p>
+                    <button onclick="showMore('biodiversity')">Learn More</button>
+                    <div id="biodiversity-more" style="display: none;">
+                        <p>Key Tasmanian species include:</p>
+                        <ul>
+                            <li>Endemic plants: Tasmanian waratah, Huon pine</li>
+                            <li>Threatened animals: Swift parrot, Tasmanian wedge-tailed eagle</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Disturbance Cycles</h3>
+                    <div class="image-placeholder">
+                        [Fire or flood image]
+                    </div>
+                    <p>Natural disturbances like fire and flood shape ecosystems. Understanding these cycles helps us manage human impacts.</p>
+                    <button onclick="showMore('disturbance')">Learn More</button>
+                    <div id="disturbance-more" style="display: none;">
+                        <p>Tasmanian fire regimes vary by ecosystem:</p>
+                        <ul>
+                            <li>Moorlands: Frequent low-intensity fires</li>
+                            <li>Rainforests: Rare catastrophic fires</li>
+                            <li>Coastal heath: Moderate frequency</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Ecological Succession</h3>
+                    <div class="image-placeholder">
+                        [Succession stages image]
+                    </div>
+                    <p>How ecosystems recover after disturbance. Knowing succession patterns helps guide restoration efforts.</p>
+                    <button onclick="showMore('succession')">Learn More</button>
+                    <div id="succession-more" style="display: none;">
+                        <p>Example: After fire in dry sclerophyll forest:</p>
+                        <ol>
+                            <li>Annual herbs and grasses</li>
+                            <li>Shrubs and resprouting trees</li>
+                            <li>Mature forest (20+ years)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Threats to Tasmanian Ecosystems</h3>
+            <ul>
+                <li><strong>Invasive species:</strong> Gorse, foxes, and phytophthora (<span class="glossary-term">dieback<span class="tooltiptext">Plant disease caused by pathogens like Phytophthora cinnamomi</span></span>)</li>
+                <li><strong>Climate change:</strong> Shifting rainfall patterns and temperatures</li>
+                <li><strong>Land use changes:</strong> Agriculture, urban expansion, and forestry</li>
+                <li><strong>Fragmentation:</strong> Isolated habitat patches</li>
+            </ul>
+        </section>
+        
+        <section id="case-studies">
+            <h2>Tasmanian Case Studies</h2>
+            <div class="card-container">
+                <div class="card">
+                    <h3>Tasman Peninsula Restoration</h3>
+                    <div class="image-placeholder">
+                        [Peninsula image]
+                    </div>
+                    <p>Coastal heath restoration after agricultural abandonment. Key techniques included:</p>
+                    <ul>
+                        <li>Gorse removal</li>
+                        <li>Native species reintroduction</li>
+                        <li>Erosion control</li>
+                    </ul>
+                    <button onclick="showCaseStudy('peninsula')">View Details</button>
+                </div>
+                
+                <div class="card">
+                    <h3>Central Plateau Moorlands</h3>
+                    <div class="image-placeholder">
+                        [Moorland image]
+                    </div>
+                    <p>Managing peatlands affected by altered fire regimes and climate change. Interventions:</p>
+                    <ul>
+                        <li>Modified burning practices</li>
+                        <li>Visitor management</li>
+                        <li>Hydrology restoration</li>
+                    </ul>
+                    <button onclick="showCaseStudy('moorlands')">View Details</button>
+                </div>
+                
+                <div class="card">
+                    <h3>North-East Invasive Control</h3>
+                    <div class="image-placeholder">
+                        [Gorse image]
+                    </div>
+                    <p>Community-led program to control gorse (Ulex europaeus) invasion. Outcomes:</p>
+                    <ul>
+                        <li>80% reduction in target areas</li>
+                        <li>Improved pasture quality</li>
+                        <li>Native species recovery</li>
+                    </ul>
+                    <button onclick="showCaseStudy('gorse')">View Details</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="field-techniques">
+            <h2>Field Techniques for Ecosystem Maintenance</h2>
+            <h3>Essential Skills for CIII CEM</h3>
+            
+            <div class="card-container">
+                <div class="card">
+                    <h3>Weed Control</h3>
+                    <div class="image-placeholder">
+                        [Weed removal image]
+                    </div>
+                    <p>Effective techniques for common Tasmanian weeds:</p>
+                    <ul>
+                        <li>Gorse: Cut-stump herbicide application</li>
+                        <li>Blackberry: Stem injection</li>
+                        <li>Bridal creeper: Biological control</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>Erosion Management</h3>
+                    <div class="image-placeholder">
+                        [Erosion control image]
+                    </div>
+                    <p>Preventing and repairing soil loss:</p>
+                    <ul>
+                        <li>Jute matting on slopes</li>
+                        <li>Revegetation strategies</li>
+                        <li>Drainage control</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3>Monitoring Methods</h3>
+                    <div class="image-placeholder">
+                        [Monitoring image]
+                    </div>
+                    <p>Tracking ecosystem health:</p>
+                    <ul>
+                        <li>Photo points</li>
+                        <li>Vegetation transects</li>
+                        <li>Fauna surveys</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Field Kit Checklist</h3>
+            <div class="checklist">
+                <div class="checklist-item">
+                    <input type="checkbox" id="item1">
+                    <label for="item1">Personal protective equipment (PPE)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="item2">
+                    <label for="item2">Field notebook and pencils</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="item3">
+                    <label for="item3">GPS device or smartphone with mapping app</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="item4">
+                    <label for="item4">Measuring tape and quadrat</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="item5">
+                    <label for="item5">Field guides (plants, animals)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="item6">
+                    <label for="item6">First aid kit</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="item7">
+                    <label for="item7">Water and emergency supplies</label>
+                </div>
+                <button onclick="printChecklist()">Print Checklist</button>
+            </div>
+        </section>
+        
+        <section id="simulation">
+            <h2>Restoration Planner Simulation</h2>
+            <p>Adjust the variables below to see how different approaches affect restoration outcomes in a Tasmanian dry sclerophyll forest.</p>
+            
+            <div class="simulation-container">
+                <div class="simulation-controls">
+                    <h3>Restoration Variables</h3>
+                    
+                    <label for="rainfall">Annual Rainfall (mm):</label>
+                    <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
+                    <span id="rainfall-value">800 mm</span>
+                    
+                    <label for="invasive-pressure">Invasive Species Pressure:</label>
+                    <input type="range" id="invasive-pressure" min="0" max="100" value="50">
+                    <span id="invasive-value">50%</span>
+                    
+                    <label for="restoration-effort">Restoration Effort:</label>
+                    <input type="range" id="restoration-effort" min="0" max="100" value="50">
+                    <span id="effort-value">50%</span>
+                    
+                    <label for="time-scale">Time Scale (years):</label>
+                    <input type="range" id="time-scale" min="1" max="20" value="5">
+                    <span id="time-value">5 years</span>
+                    
+                    <button onclick="runSimulation()">Run Simulation</button>
+                    <button onclick="resetSimulation()">Reset</button>
+                </div>
+                
+                <div class="simulation-output" id="simulation-output">
+                    <h3>Simulation Results</h3>
+                    <p>Adjust the variables and run the simulation to see results.</p>
+                    
+                    <div id="progress-container" style="display: none;">
+                        <p>Restoration Progress:</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <p id="progress-text">0% complete</p>
+                    </div>
+                    
+                    <div id="ecosystem-visual" class="ecosystem-visual" style="display: none;">
+                        <p>Ecosystem Composition:</p>
+                        <!-- Dynamic content will be added by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="quiz">
+            <h2>Knowledge Check</h2>
+            <p>Test your understanding of Tasmanian ecosystem maintenance concepts.</p>
+            
+            <div class="quiz-container">
+                <div class="question">
+                    <p>1. What is the most effective method for controlling gorse in Tasmania?</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q1" id="q1a" value="a">
+                            <label for="q1a">a) Burning alone</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" id="q1b" value="b">
+                            <label for="q1b">b) Cut-stump herbicide application</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" id="q1c" value="c">
+                            <label for="q1c">c) Manual removal without follow-up</label>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-q1"></div>
+                </div>
+                
+                <div class="question">
+                    <p>2. Which of these is NOT a key threat to Tasmanian moorlands?</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q2" id="q2a" value="a">
+                            <label for="q2a">a) Altered fire regimes</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" id="q2b" value="b">
+                            <label for="q2b">b) Climate change</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" id="q2c" value="c">
+                            <label for="q2c">c) Overgrazing by wombats</label>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-q2"></div>
+                </div>
+                
+                <div class="question">
+                    <p>3. What is the first stage of ecological succession after a severe fire in dry sclerophyll forest?</p>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q3" id="q3a" value="a">
+                            <label for="q3a">a) Mature eucalypt forest</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" id="q3b" value="b">
+                            <label for="q3b">b) Annual herbs and grasses</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" id="q3c" value="c">
+                            <label for="q3c">c) Shrub dominance</label>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback-q3"></div>
+                </div>
+                
+                <button onclick="checkQuiz()">Check Answers</button>
+                <button onclick="resetQuiz()">Reset Quiz</button>
+            </div>
+        </section>
+        
+        <section id="resources">
+            <h2>Additional Resources</h2>
+            <h3>Glossary of Terms</h3>
+            <dl>
+                <dt><strong>Dieback</strong></dt>
+                <dd>The gradual deterioration of health in trees or plants, often caused by pathogens like Phytophthora.</dd>
+                
+                <dt><strong>Ecological Succession</strong></dt>
+                <dd>The process of change in the species structure of an ecological community over time.</dd>
+                
+                <dt><strong>Fire Regime</strong></dt>
+                <dd>The pattern, frequency, and intensity of the fires that prevail in an area over long periods.</dd>
+                
+                <dt><strong>Gondwanan Species</strong></dt>
+                <dd>Plants and animals whose evolutionary history traces back to when Tasmania was part of the supercontinent Gondwana.</dd>
+            </dl>
+            
+            <h3>Further Reading</h3>
+            <ul>
+                <li>Tasmanian Land Conservancy publications</li>
+                <li>DPIPWE conservation guidelines</li>
+                <li>Bushcare and Landcare Tasmania resources</li>
+            </ul>
+        </section>
+    </div>
+    
+    <footer>
+        <p>Certificate III in Conservation and Ecosystem Management | Tasmanian Focus</p>
+        <p>© 2023 Tasmanian Ecosystem Training Program</p>
+    </footer>
+    
+    <script>
+        // Show more information for cards
+        function showMore(topic) {
+            const element = document.getElementById(`${topic}-more`);
+            if (element.style.display === 'none' || !element.style.display) {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+        
+        // Case study details (simplified)
+        function showCaseStudy(study) {
+            alert(`Loading detailed case study about ${study}. In a full implementation, this would open a detailed view or PDF.`);
+        }
+        
+        // Print checklist
+        function printChecklist() {
+            window.print();
+        }
+        
+        // Simulation functionality
+        document.getElementById('rainfall').addEventListener('input', function() {
+            document.getElementById('rainfall-value').textContent = this.value + ' mm';
+        });
+        
+        document.getElementById('invasive-pressure').addEventListener('input', function() {
+            document.getElementById('invasive-value').textContent = this.value + '%';
+        });
+        
+        document.getElementById('restoration-effort').addEventListener('input', function() {
+            document.getElementById('effort-value').textContent = this.value + '%';
+        });
+        
+        document.getElementById('time-scale').addEventListener('input', function() {
+            document.getElementById('time-value').textContent = this.value + ' years';
+        });
+        
+        function runSimulation() {
+            const rainfall = parseInt(document.getElementById('rainfall').value);
+            const invasive = parseInt(document.getElementById('invasive-pressure').value);
+            const effort = parseInt(document.getElementById('restoration-effort').value);
+            const time = parseInt(document.getElementById('time-scale').value);
+            
+            // Simple algorithm for progress calculation
+            let progress = (effort * 0.6) + (rainfall / 20 * 0.2) - (invasive * 0.2);
+            progress = progress * (time / 5); // Scale by time
+            
+            // Cap between 0 and 100
+            progress = Math.max(0, Math.min(100, progress));
+            
+            // Update progress display
+            document.getElementById('progress-container').style.display = 'block';
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = Math.round(progress) + '% complete';
+            
+            // Update ecosystem visual
+            const visualContainer = document.getElementById('ecosystem-visual');
+            visualContainer.style.display = 'block';
+            visualContainer.innerHTML = '<p>Ecosystem Composition:</p>';
+            
+            // Add species based on simulation results
+            const nativeCount = Math.min(10, Math.floor(progress / 10));
+            const invasiveCount = Math.max(0, 5 - Math.floor(progress / 20));
+            
+            for (let i = 0; i < nativeCount; i++) {
+                const species = document.createElement('div');
+                species.className = 'species native';
+                species.textContent = 'N' + (i+1);
+                visualContainer.appendChild(species);
+            }
+            
+            for (let i = 0; i < invasiveCount; i++) {
+                const species = document.createElement('div');
+                species.className = 'species invasive';
+                species.textContent = 'I' + (i+1);
+                visualContainer.appendChild(species);
+            }
+            
+            // Add interpretation
+            const interpretation = document.createElement('p');
+            if (progress < 30) {
+                interpretation.textContent = 'Ecosystem is in early recovery stage. Focus on invasive control and soil stabilization.';
+            } else if (progress < 70) {
+                interpretation.textContent = 'Moderate recovery. Continue restoration efforts and monitor native establishment.';
+            } else {
+                interpretation.textContent = 'Good recovery. Focus on maintenance and long-term monitoring.';
+            }
+            visualContainer.appendChild(interpretation);
+        }
+        
+        function resetSimulation() {
+            document.getElementById('rainfall').value = 800;
+            document.getElementById('invasive-pressure').value = 50;
+            document.getElementById('restoration-effort').value = 50;
+            document.getElementById('time-scale').value = 5;
+            
+            document.getElementById('rainfall-value').textContent = '800 mm';
+            document.getElementById('invasive-value').textContent = '50%';
+            document.getElementById('effort-value').textContent = '50%';
+            document.getElementById('time-value').textContent = '5 years';
+            
+            document.getElementById('progress-container').style.display = 'none';
+            document.getElementById('ecosystem-visual').style.display = 'none';
+            document.getElementById('simulation-output').innerHTML = '<h3>Simulation Results</h3><p>Adjust the variables and run the simulation to see results.</p>';
+        }
+        
+        // Quiz functionality
+        function checkQuiz() {
+            // Question 1
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            if (q1) {
+                const feedback = document.getElementById('feedback-q1');
+                if (q1.value === 'b') {
+                    feedback.textContent = 'Correct! Cut-stump herbicide application is the most effective method for gorse control.';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.textContent = 'Incorrect. The correct answer is b) Cut-stump herbicide application. Burning alone often stimulates regrowth, and manual removal without follow-up is ineffective.';
+                    feedback.className = 'feedback incorrect';
+                }
+                feedback.style.display = 'block';
+            }
+            
+            // Question 2
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            if (q2) {
+                const feedback = document.getElementById('feedback-q2');
+                if (q2.value === 'c') {
+                    feedback.textContent = 'Correct! Wombats are not a significant threat to moorlands. The real threats are altered fire regimes and climate change.';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.textContent = 'Incorrect. The correct answer is c) Overgrazing by wombats. Wombats are native and don\'t significantly impact moorlands.';
+                    feedback.className = 'feedback incorrect';
+                }
+                feedback.style.display = 'block';
+            }
+            
+            // Question 3
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            if (q3) {
+                const feedback = document.getElementById('feedback-q3');
+                if (q3.value === 'b') {
+                    feedback.textContent = 'Correct! Annual herbs and grasses are the first colonizers after severe fire.';
+                    feedback.className = 'feedback correct';
+                } else {
+                    feedback.textContent = 'Incorrect. The correct answer is b) Annual herbs and grasses. These pioneer species establish first after disturbance.';
+                    feedback.className = 'feedback incorrect';
+                }
+                feedback.style.display = 'block';
+            }
+        }
+        
+        function resetQuiz() {
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+            });
+            
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
