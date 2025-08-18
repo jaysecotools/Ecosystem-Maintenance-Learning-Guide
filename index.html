@@ -117,15 +117,15 @@
             margin-top: 0;
         }
         
-        .image-placeholder {
-            background-color: #eee;
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            border-radius: 4px;
-        }
+.image-placeholder {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1rem auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
         
         button {
             background-color: var(--forest-green);
@@ -329,16 +329,14 @@
     <div class="container">
         <section id="introduction">
             <h2>Introduction to Tasmanian Ecosystems</h2>
-            <div class="image-placeholder">
-                [Tasmanian landscape image]
-            </div>
+            <img src="Tasmania.jpg" alt="Tasmanian landscape" class="image-placeholder">
             <p>Welcome to the Tasmanian Ecosystem Maintenance training module. This program is designed to provide you with the knowledge and skills needed to work effectively in conservation and ecosystem management across Tasmania's unique environments.</p>
             
             <p>Tasmania's ecosystems range from coastal heathlands to alpine moorlands, each with distinct conservation challenges. As a conservation worker, you'll play a vital role in maintaining these ecosystems for future generations.</p>
             
             <h3>Why Tasmania is Special</h3>
             <ul>
-                <li>Home to ancient Gondwanan species like the <span class="glossary-term">myrtle beech<span class="tooltiptext">Nothofagus cunninghamii, a Gondwanan relic species</span></span></li>
+                <li>Home to ancient Gondwanan species like the <span class="glossary-term">myrtle beech <span class="tooltiptext">Nothofagus cunninghamii, a Gondwanan relic species</span></span></li>
                 <li>Contains some of the most intact temperate rainforests in the world</li>
                 <li>Unique alpine ecosystems found nowhere else</li>
                 <li>Critical habitat for endangered species like the Tasmanian devil</li>
@@ -350,9 +348,7 @@
             <div class="card-container">
                 <div class="card">
                     <h3>Biodiversity</h3>
-                    <div class="image-placeholder">
-                        [Tasmanian species collage]
-                    </div>
+                    <img src="Biodiversity.jpg" alt="Biodiversity" class="image-placeholder">
                     <p>Tasmania's biodiversity is supported by its isolation and varied landscapes. Maintaining species diversity ensures ecosystem resilience.</p>
                     <button onclick="showMore('biodiversity')">Learn More</button>
                     <div id="biodiversity-more" style="display: none;">
@@ -366,9 +362,7 @@
                 
                 <div class="card">
                     <h3>Disturbance Cycles</h3>
-                    <div class="image-placeholder">
-                        [Fire or flood image]
-                    </div>
+                    <img src="Fire.jpg" alt="Disturbance Cycles" class="image-placeholder">
                     <p>Natural disturbances like fire and flood shape ecosystems. Understanding these cycles helps us manage human impacts.</p>
                     <button onclick="showMore('disturbance')">Learn More</button>
                     <div id="disturbance-more" style="display: none;">
@@ -383,9 +377,7 @@
                 
                 <div class="card">
                     <h3>Ecological Succession</h3>
-                    <div class="image-placeholder">
-                        [Succession stages image]
-                    </div>
+                    <img src="Succession.jpg" alt="Ecological Succession" class="image-placeholder">
                     <p>How ecosystems recover after disturbance. Knowing succession patterns helps guide restoration efforts.</p>
                     <button onclick="showMore('succession')">Learn More</button>
                     <div id="succession-more" style="display: none;">
@@ -413,9 +405,7 @@
             <div class="card-container">
                 <div class="card">
                     <h3>Tasman Peninsula Restoration</h3>
-                    <div class="image-placeholder">
-                        [Peninsula image]
-                    </div>
+                    <img src="Tasman peninsula.jpg" alt="Tasman peninsula" class="image-placeholder">
                     <p>Coastal heath restoration after agricultural abandonment. Key techniques included:</p>
                     <ul>
                         <li>Gorse removal</li>
@@ -427,9 +417,7 @@
                 
                 <div class="card">
                     <h3>Central Plateau Moorlands</h3>
-                    <div class="image-placeholder">
-                        [Moorland image]
-                    </div>
+                    <img src="Moorland.jpg" alt="Central Plateau Moorlands" class="image-placeholder">
                     <p>Managing peatlands affected by altered fire regimes and climate change. Interventions:</p>
                     <ul>
                         <li>Modified burning practices</li>
@@ -441,9 +429,7 @@
                 
                 <div class="card">
                     <h3>North-East Invasive Control</h3>
-                    <div class="image-placeholder">
-                        [Gorse image]
-                    </div>
+                    <img src="Gorse.jpg" alt="North-East Invasive Control" class="image-placeholder">
                     <p>Community-led program to control gorse (Ulex europaeus) invasion. Outcomes:</p>
                     <ul>
                         <li>80% reduction in target areas</li>
