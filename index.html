@@ -525,38 +525,28 @@
             <p>Adjust the variables below to see how different approaches affect restoration outcomes in a Tasmanian dry sclerophyll forest.</p>
             
             <div class="simulation-container">
-    <div class="simulation-controls">
-        <h3>Restoration Variables</h3>
-        
-        <div class="control-group">
-            <label for="rainfall">Annual Rainfall (mm):</label>
-            <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
-            <span id="rainfall-value">800 mm</span>
-        </div>
-
-        <div class="control-group">
-            <label for="invasive-pressure">Invasive Species Pressure:</label>
-            <input type="range" id="invasive-pressure" min="0" max="100" value="50">
-            <span id="invasive-value">50%</span>
-        </div>
-
-        <div class="control-group">
-            <label for="restoration-effort">Restoration Effort:</label>
-            <input type="range" id="restoration-effort" min="0" max="100" value="50">
-            <span id="effort-value">50%</span>
-        </div>
-
-        <div class="control-group">
-            <label for="time-scale">Time Scale (years):</label>
-            <input type="range" id="time-scale" min="1" max="20" value="5">
-            <span id="time-value">5 years</span>
-        </div>
-
-        <button onclick="runSimulation()">Run Simulation</button>
-        <button onclick="resetSimulation()">Reset</button>
-    </div>
-</div>
-
+                <div class="simulation-controls">
+                    <h3>Restoration Variables</h3>
+                    
+                    <label for="rainfall">Annual Rainfall (mm):</label>
+                    <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
+                    <span id="rainfall-value">800 mm</span>
+                    
+                    <label for="invasive-pressure">Invasive Species Pressure:</label>
+                    <input type="range" id="invasive-pressure" min="0" max="100" value="50">
+                    <span id="invasive-value">50%</span>
+                    
+                    <label for="restoration-effort">Restoration Effort:</label>
+                    <input type="range" id="restoration-effort" min="0" max="100" value="50">
+                    <span id="effort-value">50%</span>
+                    
+                    <label for="time-scale">Time Scale (years):</label>
+                    <input type="range" id="time-scale" min="1" max="20" value="5">
+                    <span id="time-value">5 years</span>
+                    
+                    <button onclick="runSimulation()">Run Simulation</button>
+                    <button onclick="resetSimulation()">Reset</button>
+                </div>
                 
                 <div class="simulation-output" id="simulation-output">
                     <h3>Simulation Results</h3>
