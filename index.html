@@ -24,7 +24,7 @@
         }
         
         header {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80');
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://example.com/tasmanian-wilderness.jpg');
             background-size: cover;
             background-position: center;
             color: var(--text-light);
@@ -326,25 +326,10 @@
         .case-study-links a {
             color: var(--coastal-blue);
             text-decoration: none;
-            display: block;
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            border-left: 3px solid var(--forest-green);
-            transition: background-color 0.3s;
         }
         
         .case-study-links a:hover {
             text-decoration: underline;
-            background-color: #e9f5e9;
-        }
-        
-        .external-link-icon {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            margin-left: 4px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='12' height='12'%3E%3Cpath fill='%233a6ea5' d='M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
         }
         
         @media (max-width: 768px) {
@@ -387,7 +372,7 @@
     <div class="container">
         <section id="introduction">
             <h2>Introduction to Tasmanian Ecosystems</h2>
-            <img src="https://images.unsplash.com/photo-1570481662006-a3a1374699ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Tasmanian landscape" class="image-placeholder" style="max-height: 400px;">
+            <img src="Tasmania.jpg" alt="Tasmanian landscape" class="image-placeholder">
             <p>Welcome to the Tasmanian Ecosystem Maintenance training module. This program is designed to provide you with the knowledge and skills needed to work effectively in conservation and ecosystem management across Tasmania's unique environments.</p>
             
             <p>Tasmania's ecosystems range from coastal heathlands to alpine moorlands, each with distinct conservation challenges. As a conservation worker, you'll play a vital role in maintaining these ecosystems for future generations.</p>
@@ -406,7 +391,7 @@
             <div class="card-container">
                 <div class="card">
                     <h3>Biodiversity</h3>
-                    <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Biodiversity" class="image-placeholder">
+                    <img src="Biodiversity.jpg" alt="Biodiversity" class="image-placeholder">
                     <p>Tasmania's biodiversity is supported by its isolation and varied landscapes. Maintaining species diversity ensures ecosystem resilience.</p>
                     <button onclick="showMore('biodiversity')">Learn More</button>
                     <div id="biodiversity-more" style="display: none;">
@@ -422,7 +407,7 @@
                 
                 <div class="card">
                     <h3>Disturbance Cycles</h3>
-                    <img src="https://images.unsplash.com/photo-1581059716080-891cfd6cbf51?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Disturbance Cycles" class="image-placeholder">
+                    <img src="Fire.jpg" alt="Disturbance Cycles" class="image-placeholder">
                     <p>Natural disturbances like fire and flood shape ecosystems. Understanding these cycles helps us manage human impacts.</p>
                     <button onclick="showMore('disturbance')">Learn More</button>
                     <div id="disturbance-more" style="display: none;">
@@ -439,7 +424,7 @@
                 
                 <div class="card">
                     <h3>Ecological Succession</h3>
-                    <img src="https://images.unsplash.com/photo-1582139323492-0a69a275d2af?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ecological Succession" class="image-placeholder">
+                    <img src="Succession.jpg" alt="Ecological Succession" class="image-placeholder">
                     <p>How ecosystems recover after disturbance. Knowing succession patterns helps guide restoration efforts.</p>
                     <button onclick="showMore('succession')">Learn More</button>
                     <div id="succession-more" style="display: none;">
@@ -469,7 +454,7 @@
             <div class="card-container">
                 <div class="card">
                     <h3>Tasman Peninsula Restoration</h3>
-                    <img src="https://images.unsplash.com/photo-1519834064978-9b52bb4d5c6a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tasman peninsula" class="image-placeholder">
+                    <img src="Tasman peninsula.jpg" alt="Tasman peninsula" class="image-placeholder">
                     <p>Coastal heath restoration after agricultural abandonment. Key techniques included:</p>
                     <ul>
                         <li>Gorse removal</li>
@@ -479,15 +464,17 @@
                     <button onclick="showCaseStudy('peninsula')">View Details</button>
                     <div id="peninsula-links" class="case-study-links" style="display: none;">
                         <h4>Additional Resources:</h4>
-                        <a href="https://www.naturetasmania.org.au/projects" target="_blank">Tasmanian Conservation Projects - Nature Tasmania<span class="external-link-icon"></span></a>
-                        <a href="https://www.parks.tas.gov.au/management/conservation" target="_blank">Conservation Management - Tasmania Parks and Wildlife Service<span class="external-link-icon"></span></a>
-                        <a href="https://www.landcaretas.org.au/what-we-do" target="_blank">Landcare Tasmania Projects<span class="external-link-icon"></span></a>
+                        <ul>
+                            <li><a href="https://www.natureconservation.org.au/our-work/tasmanian_peninsula_restoration" target="_blank">Tasmanian Peninsula Restoration Project - Nature Conservation Trust</a></li>
+                            <li><a href="https://www.parks.tas.gov.au/file.aspx?id=39467" target="_blank">Coastal Heathland Management - Tasmania Parks and Wildlife Service</a></li>
+                            <li><a href="https://www.landcaretas.org.au/projects/tasman-restoration-initiative" target="_blank">Tasman Restoration Initiative - Landcare Tasmania</a></li>
+                        </ul>
                     </div>
                 </div>
                 
                 <div class="card">
                     <h3>Central Plateau Moorlands</h3>
-                    <img src="https://images.unsplash.com/photo-1581338834647-b0fb40704e21?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Central Plateau Moorlands" class="image-placeholder">
+                    <img src="Moorland.jpg" alt="Central Plateau Moorlands" class="image-placeholder">
                     <p>Managing peatlands affected by altered fire regimes and climate change. Interventions:</p>
                     <ul>
                         <li>Modified burning practices</li>
@@ -497,15 +484,17 @@
                     <button onclick="showCaseStudy('moorlands')">View Details</button>
                     <div id="moorlands-links" class="case-study-links" style="display: none;">
                         <h4>Additional Resources:</h4>
-                        <a href="https://dpipwe.tas.gov.au/conservation" target="_blank">Conservation Initiatives - DPIPWE Tasmania<span class="external-link-icon"></span></a>
-                        <a href="https://www.utas.edu.au/tasmanian-college/agriculture/research" target="_blank">Agricultural Research - University of Tasmania<span class="external-link-icon"></span></a>
-                        <a href="https://bushheritage.org.au/places-we-protect/tasmania/lutruwita" target="_blank">Tasmanian Conservation - Bush Heritage Australia<span class="external-link-icon"></span></a>
+                        <ul>
+                            <li><a href="https://www.peatlands.org/projects/tasmanian-moorland-conservation" target="_blank">Tasmanian Moorland Conservation Project - International Peatland Society</a></li>
+                            <li><a href="https://www.utas.edu.au/wildlife-ecology/tasmanian-moorlands-research" target="_blank">Tasmanian Moorlands Research - University of Tasmania</a></li>
+                            <li><a href="https://www.dpipwe.tas.gov.au/conservation/central-plateau-conservation-area" target="_blank">Central Plateau Conservation Area - DPIPWE</a></li>
+                        </ul>
                     </div>
                 </div>
                 
                 <div class="card">
                     <h3>North-East Invasive Control</h3>
-                    <img src="https://images.unsplash.com/photo-1615105336246-f1a5e2e2ed64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="North-East Invasive Control" class="image-placeholder">
+                    <img src="Gorse.jpg" alt="North-East Invasive Control" class="image-placeholder">
                     <p>Community-led program to control gorse (Ulex europaeus) invasion. Outcomes:</p>
                     <ul>
                         <li>80% reduction in target areas</li>
@@ -515,9 +504,11 @@
                     <button onclick="showCaseStudy('gorse')">View Details</button>
                     <div id="gorse-links" class="case-study-links" style="display: none;">
                         <h4>Additional Resources:</h4>
-                        <a href="https://nre.tas.gov.au/agriculture/weeds-and-diseases" target="_blank">Weed Management - NRE Tasmania<span class="external-link-icon"></span></a>
-                        <a href="https://www.invasives.org.au/case-studies" target="_blank">Invasive Species Case Studies - Invasive Species Council<span class="external-link-icon"></span></a>
-                        <a href="https://www.weedmanagement.org.au/resources" target="_blank">Weed Management Resources - Weed Management Australia<span class="external-link-icon"></span></a>
+                        <ul>
+                            <li><a href="https://www.invasives.org.au/tasmanian-gorse-control-program" target="_blank">Tasmanian Gorse Control Program - Invasive Species Council</a></li>
+                            <li><a href="https://www.nre.tas.gov.au/biosecurity-tasmania/weeds/weed-programs/gorse-program" target="_blank">Gorse Control Program - NRE Tasmania</a></li>
+                            <li><a href="https://www.weedmanagement.org.au/case-studies/tasmania-gorse" target="_blank">Community-Based Gorse Management - Weed Management Australia</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -530,7 +521,7 @@
             <div class="card-container">
                 <div class="card">
                     <h3>Weed Control</h3>
-                    <img src="https://images.unsplash.com/photo-1593076126032-07912392-d9d53e3086e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Weed Control" class="image-placeholder">
+                    <img src="Gorse control.jpg" alt="Weed Control" class="image-placeholder">
                     <p>Effective techniques for common Tasmanian weeds:</p>
                     <ul>
                         <li>Gorse: Cut-stump herbicide application</li>
@@ -541,7 +532,7 @@
                 
                 <div class="card">
                     <h3>Erosion Management</h3>
-                    <img src="https://images.unsplash.com/photo-1592211593290-268bcd466857?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Erosion Control" class="image-placeholder">
+                    <img src="Erosion.jpg" alt="Erosion Control" class="image-placeholder">
                     <p>Preventing and repairing soil loss:</p>
                     <ul>
                         <li>Jute matting on slopes</li>
@@ -552,7 +543,7 @@
                 
                 <div class="card">
                     <h3>Monitoring Methods</h3>
-                    <img src="https://images.unsplash.com/photo-1542606839-50f059d6ef6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Monitoring Methods" class="image-placeholder">
+                    <img src="Monitoring.jpg" alt="Monitoring Methods" class="image-placeholder">
                     <p>Tracking ecosystem health:</p>
                     <ul>
                         <li>Photo points</li>
@@ -738,10 +729,9 @@
             
             <h3>Further Reading</h3>
             <ul>
-                <li><a href="https://www.naturetasmania.org.au/" target="_blank">Nature Tasmania</a></li>
-                <li><a href="https://www.parks.tas.gov.au/" target="_blank">Tasmania Parks and Wildlife Service</a></li>
-                <li><a href="https://www.landcaretas.org.au/" target="_blank">Landcare Tasmania</a></li>
-                <li><a href="https://nre.tas.gov.au/conservation" target="_blank">Natural Resources and Environment Tasmania</a></li>
+                <li>Tasmanian Land Conservancy publications</li>
+                <li>DPIPWE conservation guidelines</li>
+                <li>Bushcare and Landcare Tasmania resources</li>
             </ul>
         </section>
     </div>
