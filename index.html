@@ -311,26 +311,40 @@
             opacity: 1;
         }
         
-        .case-study-details {
+        .case-study-links {
             margin-top: 1rem;
             padding: 1rem;
             background-color: #f9f9f9;
             border-radius: 4px;
-            display: none;
         }
         
-        .case-study-details h4 {
+        .case-study-links h4 {
             margin-top: 0;
             color: var(--forest-green);
         }
         
-        .case-study-details p {
-            margin-bottom: 1rem;
+        .case-study-links a {
+            color: var(--coastal-blue);
+            text-decoration: none;
+            display: block;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-left: 3px solid var(--forest-green);
+            transition: background-color 0.3s;
         }
         
-        .case-study-details ul {
-            margin-bottom: 1rem;
-            padding-left: 1.5rem;
+        .case-study-links a:hover {
+            text-decoration: underline;
+            background-color: #e9f5e9;
+        }
+        
+        .external-link-icon {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-left: 4px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='12' height='12'%3E%3Cpath fill='%233a6ea5' d='M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V11H19V6.413L11.207 14.207L9.793 12.793L17.585 5H13V3H21Z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
         }
         
         @media (max-width: 768px) {
@@ -463,29 +477,11 @@
                         <li>Erosion control</li>
                     </ul>
                     <button onclick="showCaseStudy('peninsula')">View Details</button>
-                    <div id="peninsula-details" class="case-study-details">
-                        <h4>Project Overview</h4>
-                        <p>The Tasman Peninsula restoration project began in 2015 to address significant degradation of coastal heathland ecosystems following decades of agricultural use. The area had been cleared for grazing, resulting in soil erosion, weed invasion, and loss of native biodiversity.</p>
-                        
-                        <h4>Methods Implemented</h4>
-                        <ul>
-                            <li>Mechanical removal of gorse followed by herbicide application to prevent regrowth</li>
-                            <li>Reintroduction of 27 native plant species sourced from local provenance</li>
-                            <li>Installation of jute matting on steep slopes to control erosion</li>
-                            <li>Community engagement program involving local volunteers in planting efforts</li>
-                        </ul>
-                        
-                        <h4>Results Achieved</h4>
-                        <p>After five years of intensive management, monitoring shows:</p>
-                        <ul>
-                            <li>85% reduction in gorse coverage across the project area</li>
-                            <li>Successful establishment of 23 native plant species with survival rates exceeding 70%</li>
-                            <li>Return of several bird species not recorded in the area for over 20 years</li>
-                            <li>Significant reduction in soil erosion with stabilization of previously degraded slopes</li>
-                        </ul>
-                        
-                        <h4>Lessons Learned</h4>
-                        <p>This project demonstrated the importance of ongoing maintenance after initial weed control. Follow-up treatments in years 2-4 were critical to preventing gorse reinvasion. Community involvement not only reduced implementation costs but also fostered greater local stewardship of the restored areas.</p>
+                    <div id="peninsula-links" class="case-study-links" style="display: none;">
+                        <h4>Additional Resources:</h4>
+                        <a href="https://www.naturetasmania.org.au/projects" target="_blank">Tasmanian Conservation Projects - Nature Tasmania<span class="external-link-icon"></span></a>
+                        <a href="https://www.parks.tas.gov.au/management/conservation" target="_blank">Conservation Management - Tasmania Parks and Wildlife Service<span class="external-link-icon"></span></a>
+                        <a href="https://www.landcaretas.org.au/what-we-do" target="_blank">Landcare Tasmania Projects<span class="external-link-icon"></span></a>
                     </div>
                 </div>
                 
@@ -499,29 +495,11 @@
                         <li>Hydrology restoration</li>
                     </ul>
                     <button onclick="showCaseStudy('moorlands')">View Details</button>
-                    <div id="moorlands-details" class="case-study-details">
-                        <h4>Project Overview</h4>
-                        <p>The Central Plateau contains Tasmania's most extensive alpine moorlands, which have been significantly impacted by changed fire regimes, climate change, and increased visitor numbers. This project, initiated in 2018, focuses on restoring ecological function to these sensitive peatland ecosystems.</p>
-                        
-                        <h4>Methods Implemented</h4>
-                        <ul>
-                            <li>Implementation of cool burn techniques during optimal moisture conditions to reduce fuel loads without damaging peat soils</li>
-                            <li>Construction of boardwalks and designated viewing areas to concentrate visitor impact</li>
-                            <li>Installation of small-scale peat dams to restore natural hydrology in drained areas</li>
-                            <li>Translocation of key moorland plant species to enhance genetic diversity</li>
-                        </ul>
-                        
-                        <h4>Results Achieved</h4>
-                        <p>Monitoring over three years has shown:</p>
-                        <ul>
-                            <li>Reduction in wildfire risk through strategic fuel reduction burning</li>
-                            <li>95% of visitors now remain on designated pathways, reducing trampling damage</li>
-                            <li>Raised water tables in previously drained areas, with natural vegetation returning</li>
-                            <li>Successful establishment of translocated species with increased flowering and seed production</li>
-                        </ul>
-                        
-                        <h4>Lessons Learned</h4>
-                        <p>This project highlighted the importance of understanding peatland hydrology before implementing restoration measures. Initial attempts at water retention failed until detailed hydrological mapping was completed. Engaging with walking clubs and tourism operators proved essential for gaining support for visitor management strategies.</p>
+                    <div id="moorlands-links" class="case-study-links" style="display: none;">
+                        <h4>Additional Resources:</h4>
+                        <a href="https://dpipwe.tas.gov.au/conservation" target="_blank">Conservation Initiatives - DPIPWE Tasmania<span class="external-link-icon"></span></a>
+                        <a href="https://www.utas.edu.au/tasmanian-college/agriculture/research" target="_blank">Agricultural Research - University of Tasmania<span class="external-link-icon"></span></a>
+                        <a href="https://bushheritage.org.au/places-we-protect/tasmania/lutruwita" target="_blank">Tasmanian Conservation - Bush Heritage Australia<span class="external-link-icon"></span></a>
                     </div>
                 </div>
                 
@@ -535,29 +513,11 @@
                         <li>Native species recovery</li>
                     </ul>
                     <button onclick="showCaseStudy('gorse')">View Details</button>
-                    <div id="gorse-details" class="case-study-details">
-                        <h4>Project Overview</h4>
-                        <p>The North-East Gorse Control Program represents a successful collaboration between landowners, conservation groups, and local government to address one of Tasmania's most problematic agricultural and environmental weeds. Beginning in 2016, this coordinated approach has treated over 1,200 hectares of gorse-infested land.</p>
-                        
-                        <h4>Methods Implemented</h4>
-                        <ul>
-                            <li>Coordinated mapping of gorse distribution across the region using GPS technology</li>
-                            <li>Training program for landowners in effective cut-stump herbicide application techniques</li>
-                            <li>Strategic use of biological control agents (gorse spider mite and gorse thrips) to reduce plant vigor</li>
-                            <li>Revegetation with competitive native species and pasture grasses in cleared areas</li>
-                        </ul>
-                        
-                        <h4>Results Achieved</h4>
-                        <p>The program has delivered significant outcomes:</p>
-                        <ul>
-                            <li>80% reduction in gorse density across participating properties</li>
-                            <li>Increased pasture productivity valued at an estimated $350,000 annually</li>
-                            <li>Natural regeneration of native vegetation in conservation areas following gorse removal</li>
-                            <li>Development of a sustainable management model that continues beyond the initial funding period</li>
-                        </ul>
-                        
-                        <h4>Lessons Learned</h4>
-                        <p>This project demonstrated that coordinated landscape-scale approaches are essential for managing highly mobile weed species like gorse. The most successful properties were those that implemented follow-up treatments for seedlings in the years after initial control. The community-based approach built social capital and knowledge sharing that continues to benefit the region.</p>
+                    <div id="gorse-links" class="case-study-links" style="display: none;">
+                        <h4>Additional Resources:</h4>
+                        <a href="https://nre.tas.gov.au/agriculture/weeds-and-diseases" target="_blank">Weed Management - NRE Tasmania<span class="external-link-icon"></span></a>
+                        <a href="https://www.invasives.org.au/case-studies" target="_blank">Invasive Species Case Studies - Invasive Species Council<span class="external-link-icon"></span></a>
+                        <a href="https://www.weedmanagement.org.au/resources" target="_blank">Weed Management Resources - Weed Management Australia<span class="external-link-icon"></span></a>
                     </div>
                 </div>
             </div>
@@ -778,9 +738,10 @@
             
             <h3>Further Reading</h3>
             <ul>
-                <li>Tasmanian Land Conservancy publications</li>
-                <li>DPIPWE conservation guidelines</li>
-                <li>Bushcare and Landcare Tasmania resources</li>
+                <li><a href="https://www.naturetasmania.org.au/" target="_blank">Nature Tasmania</a></li>
+                <li><a href="https://www.parks.tas.gov.au/" target="_blank">Tasmania Parks and Wildlife Service</a></li>
+                <li><a href="https://www.landcaretas.org.au/" target="_blank">Landcare Tasmania</a></li>
+                <li><a href="https://nre.tas.gov.au/conservation" target="_blank">Natural Resources and Environment Tasmania</a></li>
             </ul>
         </section>
     </div>
@@ -803,11 +764,19 @@
         
         // Case study details
         function showCaseStudy(study) {
-            const element = document.getElementById(`${study}-details`);
-            if (element.style.display === 'none' || !element.style.display) {
-                element.style.display = 'block';
-            } else {
-                element.style.display = 'none';
+            // Hide all case study links first
+            document.querySelectorAll('.case-study-links').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show the selected case study links
+            const element = document.getElementById(`${study}-links`);
+            if (element) {
+                if (element.style.display === 'none' || !element.style.display) {
+                    element.style.display = 'block';
+                } else {
+                    element.style.display = 'none';
+                }
             }
         }
         
