@@ -117,15 +117,14 @@
             margin-top: 0;
         }
         
-.image-placeholder {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    margin: 1rem auto;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
+        .image-placeholder {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 1rem auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
         
         button {
             background-color: var(--forest-green);
@@ -152,29 +151,29 @@
             flex: 1 1 300px;
         }
         
-.slider-group {
-    display: block;
-    margin-bottom: 1.5rem;
-}
-
-.slider-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-}
-
-.slider-group input[type="range"] {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 0.5rem;
-}
-
-.simulation-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
+        .slider-group {
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+        
+        .slider-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .slider-group input[type="range"] {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .simulation-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
         .simulation-output {
             flex: 2 1 400px;
             min-height: 300px;
@@ -312,6 +311,27 @@
             opacity: 1;
         }
         
+        .case-study-links {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        
+        .case-study-links h4 {
+            margin-top: 0;
+            color: var(--forest-green);
+        }
+        
+        .case-study-links a {
+            color: var(--coastal-blue);
+            text-decoration: none;
+        }
+        
+        .case-study-links a:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
             nav ul {
                 flex-direction: column;
@@ -380,6 +400,8 @@
                             <li>Endemic plants: Tasmanian waratah, Huon pine</li>
                             <li>Threatened animals: Swift parrot, Tasmanian wedge-tailed eagle</li>
                         </ul>
+                        <p>Tasmania's isolation has allowed for high levels of endemism, with many species found nowhere else on Earth. The island's varied topography and climate zones create diverse habitats that support this rich biodiversity. Conservation efforts focus on protecting these unique species from threats like habitat loss, invasive species, and climate change.</p>
+                        <p>Biodiversity monitoring is essential for effective ecosystem management. Techniques include vegetation surveys, fauna spotting, and remote sensing. Maintaining genetic diversity within populations is also crucial for species' long-term resilience to environmental changes.</p>
                     </div>
                 </div>
                 
@@ -395,6 +417,8 @@
                             <li>Rainforests: Rare catastrophic fires</li>
                             <li>Coastal heath: Moderate frequency</li>
                         </ul>
+                        <p>Disturbance cycles are natural processes that reset ecological succession and maintain ecosystem health. In Tasmania, fire has been a particularly important disturbance agent for thousands of years. Indigenous fire management practices created mosaic landscapes that reduced wildfire risk and maintained biodiversity.</p>
+                        <p>Modern fire management must balance protection of human assets with ecological needs. Prescribed burning is used to reduce fuel loads and maintain fire-dependent ecosystems. Understanding natural disturbance regimes helps managers make decisions about when and where to intervene after events like storms, floods, or fires.</p>
                     </div>
                 </div>
                 
@@ -410,6 +434,8 @@
                             <li>Shrubs and resprouting trees</li>
                             <li>Mature forest (20+ years)</li>
                         </ol>
+                        <p>Ecological succession is the process by which the structure of a biological community evolves over time. In Tasmania, succession pathways vary significantly between different ecosystem types. Understanding these pathways is essential for effective restoration planning.</p>
+                        <p>Primary succession occurs on new substrates like recently exposed rock surfaces, while secondary succession follows disturbances that remove vegetation but leave soil intact. Restoration ecologists often use succession theory to guide their interventions, such as introducing pioneer species to stabilize soils and create conditions suitable for later successional species.</p>
                     </div>
                 </div>
             </div>
@@ -436,6 +462,14 @@
                         <li>Erosion control</li>
                     </ul>
                     <button onclick="showCaseStudy('peninsula')">View Details</button>
+                    <div id="peninsula-links" class="case-study-links" style="display: none;">
+                        <h4>Additional Resources:</h4>
+                        <ul>
+                            <li><a href="https://www.natureconservation.org.au/our-work/tasmanian_peninsula_restoration" target="_blank">Tasmanian Peninsula Restoration Project - Nature Conservation Trust</a></li>
+                            <li><a href="https://www.parks.tas.gov.au/file.aspx?id=39467" target="_blank">Coastal Heathland Management - Tasmania Parks and Wildlife Service</a></li>
+                            <li><a href="https://www.landcaretas.org.au/projects/tasman-restoration-initiative" target="_blank">Tasman Restoration Initiative - Landcare Tasmania</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="card">
@@ -448,6 +482,14 @@
                         <li>Hydrology restoration</li>
                     </ul>
                     <button onclick="showCaseStudy('moorlands')">View Details</button>
+                    <div id="moorlands-links" class="case-study-links" style="display: none;">
+                        <h4>Additional Resources:</h4>
+                        <ul>
+                            <li><a href="https://www.peatlands.org/projects/tasmanian-moorland-conservation" target="_blank">Tasmanian Moorland Conservation Project - International Peatland Society</a></li>
+                            <li><a href="https://www.utas.edu.au/wildlife-ecology/tasmanian-moorlands-research" target="_blank">Tasmanian Moorlands Research - University of Tasmania</a></li>
+                            <li><a href="https://www.dpipwe.tas.gov.au/conservation/central-plateau-conservation-area" target="_blank">Central Plateau Conservation Area - DPIPWE</a></li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="card">
@@ -460,6 +502,14 @@
                         <li>Native species recovery</li>
                     </ul>
                     <button onclick="showCaseStudy('gorse')">View Details</button>
+                    <div id="gorse-links" class="case-study-links" style="display: none;">
+                        <h4>Additional Resources:</h4>
+                        <ul>
+                            <li><a href="https://www.invasives.org.au/tasmanian-gorse-control-program" target="_blank">Tasmanian Gorse Control Program - Invasive Species Council</a></li>
+                            <li><a href="https://www.nre.tas.gov.au/biosecurity-tasmania/weeds/weed-programs/gorse-program" target="_blank">Gorse Control Program - NRE Tasmania</a></li>
+                            <li><a href="https://www.weedmanagement.org.au/case-studies/tasmania-gorse" target="_blank">Community-Based Gorse Management - Weed Management Australia</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
@@ -546,28 +596,28 @@
                     <h3>Restoration Variables</h3>
                     
                     <div class="slider-group">
-    <label for="rainfall">Annual Rainfall (mm):</label>
-    <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
-    <span id="rainfall-value">800 mm</span>
-</div>
-
-<div class="slider-group">
-    <label for="invasive-pressure">Invasive Species Pressure:</label>
-    <input type="range" id="invasive-pressure" min="0" max="100" value="50">
-    <span id="invasive-value">50%</span>
-</div>
-
-<div class="slider-group">
-    <label for="restoration-effort">Restoration Effort:</label>
-    <input type="range" id="restoration-effort" min="0" max="100" value="50">
-    <span id="effort-value">50%</span>
-</div>
-
-<div class="slider-group">
-    <label for="time-scale">Time Scale (years):</label>
-    <input type="range" id="time-scale" min="1" max="20" value="5">
-    <span id="time-value">5 years</span>
-</div>
+                        <label for="rainfall">Annual Rainfall (mm):</label>
+                        <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
+                        <span id="rainfall-value">800 mm</span>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label for="invasive-pressure">Invasive Species Pressure:</label>
+                        <input type="range" id="invasive-pressure" min="0" max="100" value="50">
+                        <span id="invasive-value">50%</span>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label for="restoration-effort">Restoration Effort:</label>
+                        <input type="range" id="restoration-effort" min="0" max="100" value="50">
+                        <span id="effort-value">50%</span>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label for="time-scale">Time Scale (years):</label>
+                        <input type="range" id="time-scale" min="1" max="20" value="5">
+                        <span id="time-value">5 years</span>
+                    </div>
                     
                     <button onclick="runSimulation()">Run Simulation</button>
                     <button onclick="resetSimulation()">Reset</button>
@@ -702,9 +752,22 @@
             }
         }
         
-        // Case study details (simplified)
+        // Case study details
         function showCaseStudy(study) {
-            alert(`Loading detailed case study about ${study}. In a full implementation, this would open a detailed view or PDF.`);
+            // Hide all case study links first
+            document.querySelectorAll('.case-study-links').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show the selected case study links
+            const element = document.getElementById(`${study}-links`);
+            if (element) {
+                if (element.style.display === 'none' || !element.style.display) {
+                    element.style.display = 'block';
+                } else {
+                    element.style.display = 'none';
+                }
+            }
         }
         
         // Print checklist
