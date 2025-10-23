@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -514,6 +515,81 @@
             .header-content {
                 flex-wrap: wrap;
             }
+
+.jsa-container {
+    margin-top: 1rem;
+}
+
+.jsa-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.jsa-header h4 {
+    margin: 0;
+    color: var(--primary-dark);
+}
+
+.jsa-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.jsa-delete-btn {
+    background: none;
+    border: none;
+    color: #d32f2f;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.jsa-delete-btn:hover {
+    background-color: rgba(211, 47, 47, 0.1);
+}
+
+.jsa-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.jsa-message {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #e8f5e9;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+.jsa-message p {
+    margin: 0;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+}
+
+.jsa-message i {
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .jsa-actions {
+        flex-direction: column;
+    }
+    
+    .jsa-actions .nav-button {
+        width: 100%;
+    }
+
         }
     </style>
 </head>
@@ -821,51 +897,66 @@
                         <li>High-visibility clothing (if working near tracks or roads)</li>
                     </ul>
                     
-                    <div class="activity-box">
-                        <div class="activity-title"><i class="fas fa-hard-hat"></i> Self-Directed Activity: Developing a Job Safety Analysis (JSA)</div>
-                        <p>Develop a detailed JSA for the task of manually removing gorse (using loppers and handsaws) in an area with rough, uneven terrain and a dense understorey that includes native laurels.</p>
-                        <p>Use a table with the following headings:</p>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Job Step</th>
-                                        <th>Hazard</th>
-                                        <th>Risk</th>
-                                        <th>Control Measures</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Travel to site</td>
-                                        <td>Uneven ground, hidden holes</td>
-                                        <td>Tripping, falls, sprains</td>
-                                        <td>Walk carefully, use a pole to probe ground, wear sturdy ankle-supporting boots.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cutting gorse</td>
-                                        <td>Sharp thorns, repetitive strain, native laurel sap</td>
-                                        <td>Cuts, scratches, muscular injury, severe skin and eye irritation</td>
-                                        <td>Wear leather gloves, long sleeves, and safety glasses. Use correct lifting/cutting techniques, take regular breaks. Be aware of nearby laurels; avoid contacting sap.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Moving debris</td>
-                                        <td>Thorns, heavy lifting, uneven terrain</td>
-                                        <td>Cuts, back injury, trips</td>
-                                        <td>Wear gloves, use correct manual handling techniques (bend knees, keep back straight), clear a safe path.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p>Complete the JSA for all steps, including tool transport, work, and clean-up.</p>
-                    </div>
-                    
+<div class="activity-box"><div class="activity-box">
+    <div class="activity-title"><i class="fas fa-hard-hat"></i> Self-Directed Activity: Developing a Job Safety Analysis (JSA)</div>
+    <p>Develop a detailed JSA for the task of manually removing gorse (using loppers and handsaws) in an area with rough, uneven terrain and a dense understorey that includes native laurels.</p>
+    
+    <div class="jsa-container">
+        <div class="jsa-header">
+            <h4>Job Safety Analysis (JSA) Form</h4>
+            <button class="nav-button" id="addRowBtn"><i class="fas fa-plus"></i> Add Row</button>
+        </div>
+        
+        <div class="table-container">
+            <table id="jsaTable">
+                <thead>
+                    <tr>
+                        <th>Job Step</th>
+                        <th>Hazard</th>
+                        <th>Risk</th>
+                        <th>Control Measures</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="jsaTableBody">
+                    <tr>
+                        <td><input type="text" class="jsa-input" placeholder="Travel to site"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Uneven ground, hidden holes"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Tripping, falls, sprains"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Walk carefully, use a pole to probe ground, wear sturdy ankle-supporting boots"></td>
+                        <td><button class="jsa-delete-btn"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="jsa-input" placeholder="Cutting gorse"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Sharp thorns, repetitive strain, native laurel sap"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Cuts, scratches, muscular injury, severe skin and eye irritation"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Wear leather gloves, long sleeves, and safety glasses. Use correct lifting/cutting techniques, take regular breaks"></td>
+                        <td><button class="jsa-delete-btn"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" class="jsa-input" placeholder="Moving debris"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Thorns, heavy lifting, uneven terrain"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Cuts, back injury, trips"></td>
+                        <td><input type="text" class="jsa-input" placeholder="Wear gloves, use correct manual handling techniques, clear a safe path"></td>
+                        <td><button class="jsa-delete-btn"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="jsa-actions">
+            <button class="nav-button" id="saveJsaBtn"><i class="fas fa-save"></i> Save JSA</button>
+            <button class="nav-button" id="printJsaBtn"><i class="fas fa-print"></i> Print JSA</button>
+            <button class="nav-button" id="clearJsaBtn"><i class="fas fa-eraser"></i> Clear All</button>
+            <button class="nav-button" id="resetJsaBtn"><i class="fas fa-redo"></i> Reset to Examples</button>
+        </div>
+        
+        <div id="jsaSavedMessage" class="jsa-message" style="display: none;">
+            <p><i class="fas fa-check-circle"></i> JSA saved successfully!</p>
+        </div>
+    </div>
+</div>
+             
                     <div class="quiz-container">
                         <div class="quiz-title"><i class="fas fa-question-circle"></i> Quiz 1: Preparation & Safety</div>
                         <div class="question">
@@ -1325,6 +1416,259 @@
             card.classList.toggle('flipped');
         }
         
+// JSA functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add row button
+    document.getElementById('addRowBtn').addEventListener('click', addJsaRow);
+    
+    // Save JSA button
+    document.getElementById('saveJsaBtn').addEventListener('click', saveJsa);
+    
+    // Print JSA button
+    document.getElementById('printJsaBtn').addEventListener('click', printJsa);
+    
+    // Clear All button
+    document.getElementById('clearJsaBtn').addEventListener('click', clearJsa);
+    
+    // Reset to Examples button
+    document.getElementById('resetJsaBtn').addEventListener('click', resetJsaToExamples);
+    
+    // Add event listeners to existing delete buttons
+    document.querySelectorAll('.jsa-delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            deleteJsaRow(this);
+        });
+    });
+});
+
+function addJsaRow() {
+    const tableBody = document.getElementById('jsaTableBody');
+    const newRow = document.createElement('tr');
+    
+    newRow.innerHTML = `
+        <td><input type="text" class="jsa-input" placeholder="Enter job step"></td>
+        <td><input type="text" class="jsa-input" placeholder="Enter hazard"></td>
+        <td><input type="text" class="jsa-input" placeholder="Enter risk"></td>
+        <td><input type="text" class="jsa-input" placeholder="Enter control measures"></td>
+        <td><button class="jsa-delete-btn"><i class="fas fa-trash"></i></button></td>
+    `;
+    
+    tableBody.appendChild(newRow);
+    
+    // Add event listener to the new delete button
+    newRow.querySelector('.jsa-delete-btn').addEventListener('click', function() {
+        deleteJsaRow(this);
+    });
+}
+
+function deleteJsaRow(button) {
+    const row = button.closest('tr');
+    row.remove();
+}
+
+function saveJsa() {
+    const rows = document.querySelectorAll('#jsaTableBody tr');
+    const jsaData = [];
+    
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll('.jsa-input');
+        jsaData.push({
+            jobStep: inputs[0].value,
+            hazard: inputs[1].value,
+            risk: inputs[2].value,
+            controlMeasures: inputs[3].value
+        });
+    });
+    
+    // In a real application, you would save this data to a database
+    // For this demo, we'll just save to localStorage
+    localStorage.setItem('jsaData', JSON.stringify(jsaData));
+    
+    // Show success message
+    const message = document.getElementById('jsaSavedMessage');
+    message.style.display = 'block';
+    
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        message.style.display = 'none';
+    }, 3000);
+    
+    // Mark section as complete
+    markSectionComplete('section1');
+}
+
+function printJsa() {
+    // Create a printable version of the JSA
+    const printWindow = window.open('', '_blank');
+    const rows = document.querySelectorAll('#jsaTableBody tr');
+    
+    let printContent = `
+        <html>
+            <head>
+                <title>Job Safety Analysis</title>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #f2f2f2; }
+                    h1 { color: #2e7d32; }
+                </style>
+            </head>
+            <body>
+                <h1>Job Safety Analysis (JSA)</h1>
+                <p><strong>Task:</strong> Manually removing gorse in an area with rough, uneven terrain</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Step</th>
+                            <th>Hazard</th>
+                            <th>Risk</th>
+                            <th>Control Measures</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
+    
+    rows.forEach(row => {
+        const inputs = row.querySelectorAll('.jsa-input');
+        printContent += `
+            <tr>
+                <td>${inputs[0].value || ''}</td>
+                <td>${inputs[1].value || ''}</td>
+                <td>${inputs[2].value || ''}</td>
+                <td>${inputs[3].value || ''}</td>
+            </tr>
+        `;
+    });
+    
+    printContent += `
+                    </tbody>
+                </table>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+            </body>
+        </html>
+    `;
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function clearJsa() {
+    if (confirm('Are you sure you want to clear all entries? All data will be lost.')) {
+        const tableBody = document.getElementById('jsaTableBody');
+        tableBody.innerHTML = '';
+        
+        // Add one empty row to start fresh
+        addJsaRow();
+        
+        // Clear saved data from localStorage
+        localStorage.removeItem('jsaData');
+        
+        // Show confirmation message
+        showJsaMessage('All entries cleared successfully!', 'info');
+    }
+}
+
+function resetJsaToExamples() {
+    if (confirm('Are you sure you want to reset to the example entries? Your current work will be replaced.')) {
+        const tableBody = document.getElementById('jsaTableBody');
+        tableBody.innerHTML = '';
+        
+        // Add the example rows
+        const examples = [
+            {
+                jobStep: 'Travel to site',
+                hazard: 'Uneven ground, hidden holes',
+                risk: 'Tripping, falls, sprains',
+                controlMeasures: 'Walk carefully, use a pole to probe ground, wear sturdy ankle-supporting boots'
+            },
+            {
+                jobStep: 'Cutting gorse',
+                hazard: 'Sharp thorns, repetitive strain, native laurel sap',
+                risk: 'Cuts, scratches, muscular injury, severe skin and eye irritation',
+                controlMeasures: 'Wear leather gloves, long sleeves, and safety glasses. Use correct lifting/cutting techniques, take regular breaks. Be aware of nearby laurels; avoid contacting sap'
+            },
+            {
+                jobStep: 'Moving debris',
+                hazard: 'Thorns, heavy lifting, uneven terrain',
+                risk: 'Cuts, back injury, trips',
+                controlMeasures: 'Wear gloves, use correct manual handling techniques (bend knees, keep back straight), clear a safe path'
+            }
+        ];
+        
+        examples.forEach(example => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" class="jsa-input" value="${example.jobStep}"></td>
+                <td><input type="text" class="jsa-input" value="${example.hazard}"></td>
+                <td><input type="text" class="jsa-input" value="${example.risk}"></td>
+                <td><input type="text" class="jsa-input" value="${example.controlMeasures}"></td>
+                <td><button class="jsa-delete-btn"><i class="fas fa-trash"></i></button></td>
+            `;
+            
+            tableBody.appendChild(newRow);
+            
+            // Add event listener to the delete button
+            newRow.querySelector('.jsa-delete-btn').addEventListener('click', function() {
+                deleteJsaRow(this);
+            });
+        });
+        
+        // Clear saved data from localStorage since we're resetting to examples
+        localStorage.removeItem('jsaData');
+        
+        // Show confirmation message
+        showJsaMessage('Reset to example entries successfully!', 'info');
+    }
+}
+
+function showJsaMessage(text, type = 'success') {
+    const message = document.getElementById('jsaSavedMessage');
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+    const color = type === 'success' ? 'var(--primary-color)' : 'var(--accent-color)';
+    
+    message.innerHTML = `<p><i class="fas ${icon}"></i> ${text}</p>`;
+    message.style.borderLeftColor = color;
+    message.style.display = 'block';
+    
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        message.style.display = 'none';
+    }, 3000);
+}
+
+// Load saved JSA data if it exists
+function loadJsaData() {
+    const savedData = localStorage.getItem('jsaData');
+    if (savedData) {
+        const jsaData = JSON.parse(savedData);
+        const tableBody = document.getElementById('jsaTableBody');
+        tableBody.innerHTML = '';
+        
+        jsaData.forEach(item => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" class="jsa-input" value="${item.jobStep}"></td>
+                <td><input type="text" class="jsa-input" value="${item.hazard}"></td>
+                <td><input type="text" class="jsa-input" value="${item.risk}"></td>
+                <td><input type="text" class="jsa-input" value="${item.controlMeasures}"></td>
+                <td><button class="jsa-delete-btn"><i class="fas fa-trash"></i></button></td>
+            `;
+            
+            tableBody.appendChild(newRow);
+            
+            // Add event listener to the delete button
+            newRow.querySelector('.jsa-delete-btn').addEventListener('click', function() {
+                deleteJsaRow(this);
+            });
+        });
+    }
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', loadJsaData);;
+
         function showNextCard(section, currentCardNumber) {
             // Hide current card
             document.getElementById(`${section}-card-${currentCardNumber}`).style.display = 'none';
