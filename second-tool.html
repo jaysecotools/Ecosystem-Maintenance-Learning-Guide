@@ -715,11 +715,60 @@
             .quiz-action-button {
                 width: 100%;
             }
+
+  .save-load-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .save-button, .load-button {
+            background-color: var(--accent-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        
+        .save-button:hover, .load-button:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+        }
+        
+        .save-button i, .load-button i {
+            margin-right: 5px;
+        }
+        
+        .save-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e8f5e9;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            display: none;
+        }
+        
+        .save-message p {
+            margin: 0;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .save-message i {
+            margin-right: 0.5rem;
+  
         }
     </style>
 </head>
 <body>
-    <header>
+       <header>
         <div class="header-content">
             <div>
                 <h1>AHCECR301 Maintain Native Ecosystem Areas</h1>
@@ -743,8 +792,19 @@
                 <input type="text" class="search-box" id="searchBox" placeholder="Search content...">
                 <div class="search-results" id="searchResults"></div>
             </div>
+            <div class="save-load-container">
+                <button class="save-button" id="saveProgressBtn">
+                    <i class="fas fa-save"></i> Save Progress
+                </button>
+                <button class="load-button" id="loadProgressBtn">
+                    <i class="fas fa-folder-open"></i> Load Progress
+                </button>
+            </div>
+            <div id="saveMessage" class="save-message">
+                <p><i class="fas fa-check-circle"></i> Progress saved successfully!</p>
+            </div>
             <ul class="toc-list">
-                <li><a href="#" data-tab="welcome">1. Welcome and Introduction <span class="completion-badge"><i class="fas fa-check"></i> Complete</span></a>
+                <li><a href="#" data-tab="welcome">1. Welcome and Introduction</a>
                     <ul class="toc-sublist">
                         <li><a href="#" data-tab="welcome">The Importance of Ecosystem Maintenance</a></li>
                         <li><a href="#" data-tab="welcome">How to Use This Guide</a></li>
@@ -2283,6 +2343,174 @@ function showQuizAnswers(quizId) {
             
             // Mark welcome section as complete by default
             markSectionComplete('welcome');
+        });
+
+       // Progress tracking and save/load functionality
+        let userProgress = {
+            currentTab: 'welcome',
+            completedSections: ['welcome'],
+            quizResults: {
+                quiz1: { score: 0, completed: false },
+                quiz2: { score: 0, completed: false },
+                quiz3: { score: 0, completed: false }
+            },
+            jsaData: null,
+            lastSaved: null
+        };
+        
+        // Save progress function
+        function saveProgress() {
+            // Update progress data
+            userProgress.currentTab = currentTab;
+            userProgress.lastSaved = new Date().toISOString();
+            
+            // Save quiz answers
+            const quizzes = ['quiz1', 'quiz2', 'quiz3'];
+            quizzes.forEach(quizId => {
+                const textareas = document.querySelectorAll(`#${quizId.replace('quiz', 'section')} textarea`);
+                if (textareas.length > 0) {
+                    userProgress.quizResults[quizId].answers = {};
+                    textareas.forEach(textarea => {
+                        const questionNum = textarea.getAttribute('data-question');
+                        userProgress.quizResults[quizId].answers[questionNum] = textarea.value;
+                    });
+                }
+            });
+            
+            // Save JSA data if it exists
+            const savedJsaData = localStorage.getItem('jsaData');
+            if (savedJsaData) {
+                userProgress.jsaData = JSON.parse(savedJsaData);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('ahcecr301Progress', JSON.stringify(userProgress));
+            
+            // Show success message
+            const saveMessage = document.getElementById('saveMessage');
+            if (saveMessage) {
+                saveMessage.style.display = 'block';
+                setTimeout(() => {
+                    saveMessage.style.display = 'none';
+                }, 3000);
+            }
+            
+            console.log('Progress saved successfully!', userProgress);
+        }
+        
+        // Load progress function
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('ahcecr301Progress');
+            if (savedProgress) {
+                userProgress = JSON.parse(savedProgress);
+                
+                // Restore current tab
+                if (userProgress.currentTab && tabs.includes(userProgress.currentTab)) {
+                    switchTab(userProgress.currentTab);
+                }
+                
+                // Restore quiz answers
+                const quizzes = ['quiz1', 'quiz2', 'quiz3'];
+                quizzes.forEach(quizId => {
+                    if (userProgress.quizResults[quizId] && userProgress.quizResults[quizId].answers) {
+                        const sectionId = quizId.replace('quiz', 'section');
+                        Object.keys(userProgress.quizResults[quizId].answers).forEach(questionNum => {
+                            const textarea = document.querySelector(`#${sectionId} textarea[data-question="${questionNum}"]`);
+                            if (textarea) {
+                                textarea.value = userProgress.quizResults[quizId].answers[questionNum];
+                            }
+                        });
+                    }
+                });
+                
+                // Restore JSA data
+                if (userProgress.jsaData) {
+                    localStorage.setItem('jsaData', JSON.stringify(userProgress.jsaData));
+                    loadJsaData();
+                }
+                
+                // Update progress bar
+                updateProgress();
+                
+                // Show completion status for sections
+                userProgress.completedSections.forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                        section.classList.add('section-complete');
+                    }
+                });
+                
+                alert('Progress loaded successfully!');
+                console.log('Progress loaded:', userProgress);
+            } else {
+                alert('No saved progress found.');
+            }
+        }
+        
+        // Update markSectionComplete to track in userProgress
+        function markSectionComplete(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section && !section.classList.contains('section-complete')) {
+                section.classList.add('section-complete');
+                
+                // Add to completed sections if not already there
+                if (!userProgress.completedSections.includes(sectionId)) {
+                    userProgress.completedSections.push(sectionId);
+                }
+                
+                updateProgress();
+            }
+        }
+        
+        // Update progress calculation to use completed sections
+        function updateProgress() {
+            const progress = (userProgress.completedSections.length / tabs.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+        
+        // Update quiz submission to track in userProgress
+        function submitQuiz(quizId) {
+            checkQuiz(quizId);
+            
+            // Update progress tracking
+            const resultsElement = document.getElementById(`results-${quizId}`);
+            if (resultsElement && resultsElement.style.display === 'block') {
+                const scoreElement = document.getElementById(`score-${quizId}`);
+                if (scoreElement) {
+                    const scoreText = scoreElement.textContent;
+                    const scoreMatch = scoreText.match(/(\d+)\/\d+/);
+                    if (scoreMatch) {
+                        userProgress.quizResults[quizId].score = parseInt(scoreMatch[1]);
+                        userProgress.quizResults[quizId].completed = true;
+                        
+                        // Mark section as complete
+                        const sectionId = quizId.replace('quiz', 'section');
+                        markSectionComplete(sectionId);
+                    }
+                }
+                
+                alert('Quiz submitted successfully! Your results have been recorded.');
+            }
+        }
+        
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // All previous initialization code remains...
+            
+            // Add save/load progress buttons
+            document.getElementById('saveProgressBtn').addEventListener('click', saveProgress);
+            document.getElementById('loadProgressBtn').addEventListener('click', loadProgress);
+            
+            // Try to load progress automatically on page load
+            const savedProgress = localStorage.getItem('ahcecr301Progress');
+            if (savedProgress) {
+                if (confirm('Saved progress found. Would you like to load it?')) {
+                    loadProgress();
+                }
+            }
+            
+            // Initialize progress
+            updateProgress();
         });
     </script>
 </body>
