@@ -319,24 +319,7 @@
             display: none;
         }
         
-        @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            nav a {
-                display: block;
-                width: 100%;
-                text-align: center;
-                margin: 0.2rem 0;
-            }
-            
-            .simulation-container {
-                flex-direction: column;
-            }
-
-			        /* NEW STYLES FOR THE PROMINENT BUTTON */
+        /* NEW STYLES FOR THE PROMINENT BUTTON - MOVED OUTSIDE MEDIA QUERY */
         .prominent-button {
             background: linear-gradient(135deg, var(--highlight-yellow), #e6b400);
             color: var(--text-dark);
@@ -402,6 +385,39 @@
         .pulse-button {
             animation: pulse-glow 2s infinite;
         }
+        
+        /* Enhanced desktop styles for the prominent button */
+        @media (min-width: 769px) {
+            .prominent-button {
+                padding: 1.2rem 2.5rem;
+                font-size: 1.3rem;
+                box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+            }
+            
+            .training-highlight {
+                background: linear-gradient(to right, rgba(242, 201, 76, 0.1), transparent);
+                padding: 1.5rem;
+                border-radius: 8px;
+                margin: 2rem 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin: 0.2rem 0;
+            }
+            
+            .simulation-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
