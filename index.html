@@ -28,47 +28,106 @@
             background-size: cover;
             background-position: center;
             color: var(--text-light);
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
+            position: relative;
         }
         
         h1 {
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 1.8rem;
+            line-height: 1.2;
         }
         
         .subtitle {
             font-style: italic;
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
+            font-size: 0.9rem;
         }
         
+        /* Mobile-first navigation styles */
         nav {
             background-color: var(--forest-green);
-            padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: all 0.3s ease;
         }
         
-        nav ul {
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-header {
             display: flex;
-            justify-content: space-around;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
         }
         
-        nav a {
+        .nav-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .nav-menu.show {
+            max-height: 500px; /* Enough to show all menu items */
+        }
+        
+        .nav-menu li {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-menu a {
             color: var(--text-light);
             text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.8rem 1rem;
+            display: block;
             transition: background-color 0.3s;
         }
         
-        nav a:hover {
+        .nav-menu a:hover {
             background-color: var(--coastal-blue);
+        }
+        
+        /* Desktop navigation */
+        @media (min-width: 769px) {
+            .nav-toggle {
+                display: none;
+            }
+            
+            .nav-menu {
+                display: flex;
+                justify-content: space-around;
+                max-height: none;
+                padding: 0.5rem;
+            }
+            
+            .nav-menu li {
+                border-top: none;
+            }
+            
+            .nav-menu a {
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+            }
         }
         
         .container {
@@ -82,7 +141,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
-            padding: 2rem;
+            padding: 1.5rem;
             overflow: hidden;
         }
         
@@ -90,6 +149,7 @@
             color: var(--forest-green);
             border-bottom: 2px solid var(--moorland-brown);
             padding-bottom: 0.5rem;
+            font-size: 1.5rem;
         }
         
         .card-container {
@@ -319,7 +379,7 @@
             display: none;
         }
         
-        /* NEW STYLES FOR THE PROMINENT BUTTON - MOVED OUTSIDE MEDIA QUERY */
+        /* NEW STYLES FOR THE PROMINENT BUTTON */
         .prominent-button {
             background: linear-gradient(135deg, var(--highlight-yellow), #e6b400);
             color: var(--text-dark);
@@ -388,6 +448,19 @@
         
         /* Enhanced desktop styles for the prominent button */
         @media (min-width: 769px) {
+            header {
+                padding: 2rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-top: 0.5rem;
+            }
+            
             .prominent-button {
                 padding: 1.2rem 2.5rem;
                 font-size: 1.3rem;
@@ -403,20 +476,47 @@
         }
         
         @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                align-items: center;
+            header {
+                padding: 0.8rem;
             }
             
-            nav a {
-                display: block;
-                width: 100%;
-                text-align: center;
-                margin: 0.2rem 0;
+            h1 {
+                font-size: 1.5rem;
             }
             
-            .simulation-container {
-                flex-direction: column;
+            .subtitle {
+                font-size: 0.8rem;
+                margin-top: 0.2rem;
+            }
+            
+            section {
+                padding: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 0.6rem;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .subtitle {
+                font-size: 0.75rem;
+            }
+            
+            section {
+                padding: 0.8rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -428,17 +528,24 @@
     </header>
     
     <nav>
-        <ul>
-            <li><a href="#introduction">Introduction</a></li>
-            <li><a href="#key-concepts">Key Concepts</a></li>
-            <li><a href="#case-studies">Case Studies</a></li>
-            <li><a href="#field-techniques">Field Techniques</a></li>
-            <li><a href="#simulation">Simulation Tool</a></li>
-            <li><a href="#quiz">Knowledge Check</a></li>
-            <!-- ADD THIS NEW NAV ITEM -->
-            <li><a href="#certificate-training">Certificate Training</a></li>
-            <li><a href="#resources">Resources</a></li>
-        </ul>
+        <div class="nav-container">
+            <div class="nav-header">
+                <span style="color: var(--text-light); font-weight: bold;">Menu</span>
+                <button class="nav-toggle" id="navToggle">
+                    ☰
+                </button>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#key-concepts">Key Concepts</a></li>
+                <li><a href="#case-studies">Case Studies</a></li>
+                <li><a href="#field-techniques">Field Techniques</a></li>
+                <li><a href="#simulation">Simulation Tool</a></li>
+                <li><a href="#quiz">Knowledge Check</a></li>
+                <li><a href="#certificate-training">Certificate Training</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+        </div>
     </nav>
     
     <div class="container">
@@ -521,6 +628,7 @@
             </ul>
         </section>
         
+        <!-- Rest of the content remains the same -->
         <section id="case-studies">
             <h2>Tasmanian Case Studies</h2>
             <div class="card-container">
@@ -908,6 +1016,31 @@
     </footer>
     
     <script>
+        // Mobile navigation toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('show');
+            // Change hamburger icon
+            if (navMenu.classList.contains('show')) {
+                navToggle.innerHTML = '✕';
+            } else {
+                navToggle.innerHTML = '☰';
+            }
+        });
+        
+        // Close menu when clicking on a link (mobile)
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    navMenu.classList.remove('show');
+                    navToggle.innerHTML = '☰';
+                }
+            });
+        });
+        
         // Show more information for cards
         function showMore(topic) {
             const element = document.getElementById(`${topic}-more`);
