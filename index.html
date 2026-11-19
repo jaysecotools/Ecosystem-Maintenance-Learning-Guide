@@ -560,52 +560,58 @@
 
 /* ---------- PRINT: CHECKLIST ONLY ---------- */
 @media print {
-  /* Remove everything from layout flow */
-  body > * {
-    display: none !important;
-  }
-
-  /* Reveal the ancestor chain of the checklist */
-  body > .container,
-  body > .container > #field-techniques {
-    display: block !important;
-  }
-
-  /* Hide everything inside the section except the checklist */
-  #field-techniques > * {
-    display: none !important;
-  }
-
-  #field-techniques > h3:nth-of-type(2) {   /* "Field Kit Checklist" heading */
-    display: block !important;
-  }
-
-  #field-techniques > .checklist {
-    display: block !important;
-  }
-
-  /* Reset page margins & colours for print */
-  body {
-    background: #fff !important;
-    margin: 0;
-    padding: 0;
-  }
-
-  .container {
-    max-width: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  #field-techniques {
+  /* Hide EVERYTHING with visibility trick (works better with sticky/fixed parents) */
+  body * {
+    visibility: hidden !important;
     box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
+    animation: none !important;
+  }
+
+  /* Reveal the chain we need */
+  #field-techniques,
+  #field-techniques h3,
+  #field-techniques .checklist,
+  #field-techniques .checklist * {
+    visibility: visible !important;
+  }
+
+  /* Show only the "Field Kit Checklist" heading — the 2nd h3 in the section */
+  #field-techniques > h3 {
+    visibility: hidden !important;
+  }
+  #field-techniques > h3.checklist-heading {
+    visibility: visible !important;
+  }
+
+  /* Rip the checklist out of the page flow and pin it to the top */
+  #field-techniques {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
+    background: #fff !important;
   }
 
-  /* Print-friendly title above the list */
+  #field-techniques .checklist {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Kill the sticky nav — this is the usual culprit for blank pages */
+  .nav-wrapper,
+  .hero,
+  footer,
+  .print-btn {
+    display: none !important;
+  }
+
+  /* Title that only appears on the printed page */
   .checklist::before {
     content: "Field Kit Checklist — CIII CEM";
     display: block;
@@ -615,46 +621,48 @@
     border-bottom: 3px solid #e6b422;
     padding-bottom: 0.4rem;
     margin-bottom: 0.8rem;
+    visibility: visible;
   }
 
-  /* Each item as a clean line with a visible empty box */
+  /* Each item on its own line with a visible empty box */
   .checklist-item {
     display: flex !important;
     align-items: center;
     gap: 0.6rem;
     padding: 0.35rem 0;
-    background: none;
+    background: none !important;
     border-bottom: 1px dotted #bbb;
     page-break-inside: avoid;
+    visibility: visible !important;
   }
 
   .checklist-item input[type="checkbox"] {
     width: 14px;
     height: 14px;
     accent-color: #000;
+    visibility: visible !important;
   }
 
   .checklist-item label {
     font-size: 0.95rem;
     color: #000;
+    visibility: visible !important;
   }
 
-  /* Hide the print button */
-  .print-btn {
-    display: none !important;
-  }
-
-  /* Prevent blank pages from stray margins */
+  /* Reset page-level styles */
   html, body {
     height: auto !important;
     overflow: visible !important;
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  
-  /* Prevent awkward page breaks */
-  section {
-    page-break-inside: auto;
+
+  @page {
+    margin: 1.5cm;
   }
 }
+
   </style>
 </head>
 <body>
@@ -860,7 +868,7 @@
         </div>
       </div>
 
-      <h3>Field Kit Checklist</h3>
+      <h3 class="checklist-heading">Field Kit Checklist</h3>
       <div class="checklist" id="fieldChecklist">
         <div class="checklist-item"><input type="checkbox" id="item1"><label for="item1">Personal protective equipment (PPE)</label></div>
         <div class="checklist-item"><input type="checkbox" id="item2"><label for="item2">Field notebook and pencils</label></div>
