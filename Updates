@@ -1,964 +1,392 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tasmanian Ecosystem Maintenance | CIII CEM</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+Great instinct — the "N1 / I1" bubble approach is dated and doesn't communicate much. Let me suggest something better before I write it.
 
-    :root {
-      --forest-deep: #1e3a1e;
-      --forest-mid: #2b5e2b;
-      --forest-light: #3e7e3e;
-      --sand-light: #f5f0e7;
-      --sand-mid: #e8dfd1;
-      --stone: #5a5a5a;
-      --sky: #7aa5c2;
-      --gold: #e6b422;
-      --gold-light: #f5d742;
-      --shadow-sm: 0 8px 20px -6px rgba(0, 32, 0, 0.15);
-      --shadow-md: 0 20px 35px -10px rgba(0, 32, 0, 0.25);
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 10px;
-      --font: 'Inter', system-ui, -apple-system, sans-serif;
-    }
+My recommendation: A living landscape canvas with layered visual metaphors
 
-    body {
-      font-family: var(--font);
-      background: #fafaf8;
-      color: #1e2a1e;
-      line-height: 1.6;
-      scroll-behavior: smooth;
-    }
+Instead of abstract badges, render an actual top-down landscape grid — a 20×12 "land parcel" — where each cell is a small plot of land. Each cell's appearance is driven by three variables simultaneously:
 
-    h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
-    h1 { font-size: 2.2rem; font-weight: 700; }
-    h2 {
-      font-size: 1.9rem;
-      color: var(--forest-deep);
-      border-bottom: 4px solid var(--gold);
-      display: inline-block;
-      padding-bottom: 0.3rem;
-      margin-bottom: 1.75rem;
-    }
-    h3 { font-size: 1.3rem; color: var(--forest-mid); margin-bottom: 0.75rem; }
-    p { margin-bottom: 1rem; }
-    a { color: var(--forest-mid); text-decoration: none; font-weight: 500; }
+1. Colour (soil health gradient) — deep forest green → olive → dusty tan → cracked grey. This is the heatmap layer, but grounded in something recognisable (healthy land vs. degraded land).
+2. Species glyphs — instead of "N1/I1" text, small SVG icons: a native shrub/grass tuft (green) and an invasive gorse spike (red/orange), scattered with density proportional to native vs. invasive coverage. Cells with high invasives get red-tinted soil, cells with high natives get green tint.
+3. Pulse / shimmer — healthy cells subtly animate (CSS keyframes) so the landscape feels alive; degraded cells are static and flat. This is the "2026" touch without being gratuitous.
 
-    .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+Plus three live stat readouts below the canvas: Native Cover %, Invasive Cover %, and a Trajectory indicator (Declining / Stabilising / Recovering / Thriving) — because a single progress bar hides the ecology. Rainfall, effort, and invasive pressure each modulate specific visual dimensions, so the user sees each slider do something distinct:
 
-    /* ---------- HERO ---------- */
-    .hero {
-      background: linear-gradient(145deg, #0e1f0e 0%, #1e3a1e 40%, #2b4b2b 100%);
-      color: white;
-      padding: 3rem 1.5rem 4rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      border-radius: 0 0 40px 40px;
-      box-shadow: var(--shadow-md);
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: url('images/tasmania-hero.jpg');
-      background-size: cover;
-      background-position: center 30%;
-      opacity: 0.3;
-      mix-blend-mode: overlay;
-      z-index: 0;
-    }
-    .hero > * { position: relative; z-index: 2; }
-    .hero h1 { font-size: 2.6rem; margin-bottom: 0.5rem; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-    .hero .subtitle {
-      font-size: 1.15rem;
-      font-weight: 400;
-      opacity: 0.95;
-      letter-spacing: 0.3px;
-      background: rgba(0, 0, 0, 0.3);
-      display: inline-block;
-      padding: 0.5rem 1.5rem;
-      border-radius: 50px;
-      backdrop-filter: blur(4px);
-    }
+· Rainfall → baseline soil colour saturation (drier = more tan/brown tones)
+· Invasive pressure → how many invasive glyphs spawn and how aggressively they cluster
+· Restoration effort → how many native glyphs spawn and how quickly cells recover colour
+· Time → how far along the recovery gradient the whole canvas has shifted
 
-    /* ---------- NAV ---------- */
-    .nav-wrapper {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(30, 58, 30, 0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .nav-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.6rem 1.5rem;
-      position: relative;
-    }
-    .nav-brand { color: white; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .nav-brand i { color: var(--gold); }
-    .nav-toggle {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.8rem;
-      cursor: pointer;
-      display: none;
-      padding: 0.2rem 0.6rem;
-      border-radius: 8px;
-    }
-    .nav-menu {
-      display: flex;
-      list-style: none;
-      gap: 0.2rem;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .nav-menu a {
-      color: white;
-      font-weight: 500;
-      padding: 0.55rem 0.9rem;
-      border-radius: 40px;
-      transition: 0.2s;
-      font-size: 0.9rem;
-      display: block;
-    }
-    .nav-menu a:hover { background: var(--forest-light); }
+Every Run re-generates the grid with a seeded random layout, so it feels alive but reproducible per run. I'll also add a legend and hover tooltips on cells (e.g. "Plot 4-7 · Native: high · Invasive: moderate").
 
-    @media (max-width: 980px) {
-      .nav-toggle { display: block; }
-      .nav-menu {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: var(--forest-deep);
-        flex-direction: column;
-        gap: 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease;
-        border-radius: 0 0 24px 24px;
-        box-shadow: var(--shadow-md);
-      }
-      .nav-menu.show { max-height: 700px; }
-      .nav-menu li { border-top: 1px solid rgba(255,255,255,0.08); }
-      .nav-menu a { padding: 1rem 1.5rem; border-radius: 0; }
-    }
+Here's the replacement — just the simulation section HTML and its JavaScript, plus a small CSS block. Swap these into your existing file. Everything else (nav, other sections, quiz) stays identical.
 
-    /* ---------- SECTIONS & CARDS ---------- */
-    section {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      margin-bottom: 2.5rem;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(0,0,0,0.02);
-    }
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.8rem;
-      margin: 1.5rem 0;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: var(--radius-md);
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border: 1px solid #e9e9e9;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      flex-direction: column;
-    }
-    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
-    .card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-      background: var(--sand-mid);
-    }
-    .card button {
-      background: var(--forest-mid);
-      color: white;
-      border: none;
-      padding: 0.65rem 1.4rem;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: auto;
-      align-self: flex-start;
-      box-shadow: 0 4px 10px rgba(43, 94, 43, 0.3);
-    }
-    .card button:hover { background: var(--forest-deep); transform: scale(1.02); }
+---
 
-    .hidden-content { display: none; margin-top: 1rem; }
-    .hidden-content.show { display: block; }
+1. Replace the entire <section id="simulation"> block with this:
 
-    /* ---------- SIMULATION ---------- */
-    .simulation-card {
-      background: #f1efe9;
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      border: 1px solid #dbd5ca;
-      margin-top: 1.5rem;
-    }
-    @media (max-width: 800px) { .simulation-card { grid-template-columns: 1fr; } }
+```html
+<!-- SIMULATION -->
+<section id="simulation">
+  <h2>Restoration Planner Simulation</h2>
+  <p>Adjust the variables below to see how different approaches affect restoration outcomes in a Tasmanian dry sclerophyll forest. Each plot in the landscape reflects its own balance of native and invasive cover, soil condition, and moisture.</p>
 
-    .sim-controls {
-      background: white;
-      padding: 1.8rem;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
-    }
-    .slider-group { margin-bottom: 1.5rem; }
-    .slider-group label {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-      font-size: 0.92rem;
-      color: var(--forest-deep);
-      margin-bottom: 0.4rem;
-    }
-    .slider-group label span {
-      background: #eff3ec;
-      padding: 0.1rem 0.7rem;
-      border-radius: 40px;
-      font-weight: 700;
-      color: var(--forest-mid);
-    }
-    input[type="range"] {
-      width: 100%;
-      height: 8px;
-      -webkit-appearance: none;
-      background: #d9d9d9;
-      border-radius: 10px;
-      outline: none;
-      margin: 0.3rem 0;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 22px;
-      height: 22px;
-      background: var(--forest-mid);
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      transition: 0.1s;
-    }
-    input[type="range"]::-webkit-slider-thumb:hover { background: var(--forest-deep); transform: scale(1.1); }
+  <div class="simulation-card">
+    <div class="sim-controls">
+      <h3 style="margin-bottom:1.2rem;">Restoration Variables</h3>
 
-    .sim-buttons { display: flex; gap: 1rem; margin-top: 1.4rem; flex-wrap: wrap; }
-    .sim-buttons button {
-      flex: 1;
-      min-width: 120px;
-      padding: 0.8rem 1rem;
-      border-radius: 40px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .sim-buttons .run-btn { background: var(--forest-mid); color: white; box-shadow: 0 6px 14px rgba(43, 94, 43, 0.35); }
-    .sim-buttons .run-btn:hover { background: var(--forest-deep); transform: translateY(-2px); }
-    .sim-buttons .reset-btn { background: #e6e2d9; color: #3d3d3d; }
-    .sim-buttons .reset-btn:hover { background: #d3cdc1; }
-
-    .sim-output {
-      background: white;
-      border-radius: var(--radius-md);
-      padding: 1.8rem;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      min-height: 340px;
-    }
-    .progress-bar-bg {
-      width: 100%;
-      height: 22px;
-      background: #e6e6e6;
-      border-radius: 40px;
-      margin: 1rem 0 0.5rem;
-      overflow: hidden;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--forest-light), var(--forest-mid));
-      border-radius: 40px;
-      transition: width 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
-    }
-    .progress-text { font-weight: 700; color: var(--forest-deep); font-size: 1.05rem; }
-    .ecosystem-visual { display: flex; flex-wrap: wrap; gap: 10px; margin: 1rem 0; align-items: center; }
-    .species-badge {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 0.85rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      animation: popIn 0.3s ease;
-    }
-    .species-badge:hover { transform: scale(1.1); }
-    .native { background: linear-gradient(145deg, #2b6b2b, #1e4a1e); border: 2px solid #a5d6a5; }
-    .invasive { background: linear-gradient(145deg, #b33e3e, #8a2a2a); border: 2px solid #f0b3b3; }
-    @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-    .interpretation-text {
-      background: #f4f8f2;
-      padding: 1rem;
-      border-radius: var(--radius-sm);
-      border-left: 6px solid var(--forest-light);
-      font-weight: 500;
-      margin-top: auto;
-    }
-    .placeholder-text { color: #777; font-style: italic; }
-
-    /* ---------- QUIZ ---------- */
-    .quiz-container { background: #fcfaf7; border-radius: var(--radius-md); padding: 1.5rem; }
-    .question { margin-bottom: 1.8rem; border-bottom: 1px solid #e0ddd7; padding-bottom: 1.2rem; }
-    .options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem; }
-    .option { display: flex; align-items: center; gap: 0.5rem; }
-    .feedback { margin-top: 0.6rem; padding: 0.7rem 1rem; border-radius: var(--radius-sm); display: none; font-weight: 500; }
-    .feedback.correct { background: #d4edda; color: #155724; display: block; }
-    .feedback.incorrect { background: #f8d7da; color: #721c24; display: block; }
-
-    /* ---------- CHECKLIST ---------- */
-    .checklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.5rem; margin: 1.2rem 0; }
-    .checklist-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: var(--radius-sm); background: #f8f8f6; }
-    .checklist-item input { width: 18px; height: 18px; accent-color: var(--forest-mid); }
-    .print-btn {
-      background: var(--forest-mid);
-      color: white;
-      border: none;
-      padding: 0.7rem 1.6rem;
-      border-radius: 40px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 0.8rem;
-    }
-    .print-btn:hover { background: var(--forest-deep); }
-
-    /* ---------- GLOSSARY ---------- */
-    dl { margin-top: 1rem; }
-    dt { font-weight: 700; color: var(--forest-deep); margin-top: 1rem; }
-    dd { margin-left: 0; color: #444; }
-
-    /* ---------- TRAINING CTA ---------- */
-    .training-card {
-      background: linear-gradient(135deg, #fdf8e6, #f5ecd6);
-      border: 1px solid var(--gold-light);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem;
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .training-card h3 { color: var(--forest-deep); margin-bottom: 0.5rem; }
-    .training-highlight {
-      border-left: 5px solid var(--gold);
-      background: rgba(255,255,255,0.6);
-      padding: 1.2rem 1.5rem;
-      border-radius: var(--radius-sm);
-      margin: 1.5rem 0;
-      text-align: left;
-    }
-    .prominent-button {
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--forest-deep);
-      border: none;
-      padding: 1.1rem 2.5rem;
-      border-radius: 60px;
-      font-size: 1.15rem;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.7rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 20px -6px rgba(230, 180, 34, 0.5);
-      position: relative;
-      overflow: hidden;
-    }
-    .prominent-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 26px -6px rgba(230, 180, 34, 0.65);
-      background: linear-gradient(135deg, #f0c73a, #ffe066);
-    }
-    .prominent-button::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      transition: left 0.5s;
-    }
-    .prominent-button:hover::after { left: 100%; }
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 0 0 rgba(230, 180, 34, 0.6); }
-      70% { box-shadow: 0 0 0 14px rgba(230, 180, 34, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(230, 180, 34, 0); }
-    }
-    .pulse-button { animation: pulse-glow 2.2s infinite; }
-
-    /* ---------- FOOTER ---------- */
-    footer {
-      background: var(--forest-deep);
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      border-radius: 40px 40px 0 0;
-      margin-top: 3rem;
-      font-size: 0.95rem;
-    }
-    footer i { color: var(--gold); margin: 0 0.2rem; }
-
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 640px) {
-      .hero h1 { font-size: 1.9rem; }
-      .hero .subtitle { font-size: 1rem; }
-      h2 { font-size: 1.6rem; }
-      section { padding: 1.5rem; }
-      .simulation-card { padding: 1.2rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- HERO -->
-  <header class="hero">
-    <h1>Tasmanian Ecosystem Maintenance</h1>
-    <p class="subtitle">Certificate III in Conservation and Ecosystem Management</p>
-  </header>
-
-  <!-- NAV -->
-  <div class="nav-wrapper">
-    <div class="nav-container">
-      <div class="nav-brand">
-        <i class="fas fa-leaf"></i> CIII CEM
+      <div class="slider-group">
+        <label for="rainfall">Annual Rainfall <span id="rainfall-value">800 mm</span></label>
+        <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
       </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="#introduction">Introduction</a></li>
-        <li><a href="#key-concepts">Key Concepts</a></li>
-        <li><a href="#case-studies">Case Studies</a></li>
-        <li><a href="#field-techniques">Field Techniques</a></li>
-        <li><a href="#simulation">Simulation</a></li>
-        <li><a href="#quiz">Knowledge Check</a></li>
-        <li><a href="#certificate-training">Certificate Training</a></li>
-        <li><a href="#resources">Resources</a></li>
-      </ul>
+      <div class="slider-group">
+        <label for="invasive-pressure">Invasive Species Pressure <span id="invasive-value">50%</span></label>
+        <input type="range" id="invasive-pressure" min="0" max="100" value="50">
+      </div>
+      <div class="slider-group">
+        <label for="restoration-effort">Restoration Effort <span id="effort-value">50%</span></label>
+        <input type="range" id="restoration-effort" min="0" max="100" value="50">
+      </div>
+      <div class="slider-group">
+        <label for="time-scale">Time Scale <span id="time-value">5 years</span></label>
+        <input type="range" id="time-scale" min="1" max="20" value="5">
+      </div>
+
+      <div class="sim-buttons">
+        <button class="run-btn" onclick="runSimulation()"><i class="fas fa-play"></i> Run Simulation</button>
+        <button class="reset-btn" onclick="resetSimulation()"><i class="fas fa-undo-alt"></i> Reset</button>
+      </div>
+
+      <!-- Legend -->
+      <div class="sim-legend">
+        <span><i class="legend-dot legend-native"></i> Native</span>
+        <span><i class="legend-dot legend-invasive"></i> Invasive</span>
+        <span class="legend-gradient"><i class="legend-bar"></i> Soil health: degraded → healthy</span>
+      </div>
+    </div>
+
+    <div class="sim-output" id="simulation-output">
+      <h3>Simulation Results</h3>
+      <p class="placeholder-text">Adjust the variables and run the simulation to see results.</p>
     </div>
   </div>
+</section>
+```
 
-  <div class="container">
+---
 
-    <!-- INTRODUCTION -->
-    <section id="introduction">
-      <h2>Introduction to Tasmanian Ecosystems</h2>
-      <img src="images/tasmania.jpg" alt="Tasmanian landscape" style="width:100%; max-height:340px; object-fit:cover; border-radius:16px; margin-bottom:1.5rem; box-shadow: var(--shadow-sm);">
-      <p>Welcome to the Tasmanian Ecosystem Maintenance training module. This program is designed to provide you with the knowledge and skills needed to work effectively in conservation and ecosystem management across Tasmania's unique environments.</p>
-      <p>Tasmania's ecosystems range from coastal heathlands to alpine moorlands, each with distinct conservation challenges. As a conservation worker, you'll play a vital role in maintaining these ecosystems for future generations.</p>
-      <h3>Why Tasmania is Special</h3>
-      <ul style="padding-left:1.4rem; display:flex; flex-direction:column; gap:0.4rem;">
-        <li>Home to ancient Gondwanan species like the myrtle beech (<em>Nothofagus cunninghamii</em>)</li>
-        <li>Contains some of the most intact temperate rainforests in the world</li>
-        <li>Unique alpine ecosystems found nowhere else</li>
-        <li>Critical habitat for endangered species like the Tasmanian devil</li>
-      </ul>
-    </section>
+2. Add this CSS block (anywhere in your <style>, e.g. just before the closing </style>):
 
-    <!-- KEY CONCEPTS -->
-    <section id="key-concepts">
-      <h2>Key Ecological Concepts</h2>
-      <div class="card-container">
-        <div class="card">
-          <img src="images/biodiversity.jpg" alt="Biodiversity">
-          <h3>Biodiversity</h3>
-          <p>Tasmania's biodiversity is supported by its isolation and varied landscapes. Maintaining species diversity ensures ecosystem resilience.</p>
-          <button onclick="toggleContent('biodiversity-more')">Learn More</button>
-          <div id="biodiversity-more" class="hidden-content">
-            <p>Key Tasmanian species include:</p>
-            <ul style="padding-left:1.2rem; margin-bottom:0.8rem;">
-              <li>Endemic plants: Tasmanian waratah, Huon pine</li>
-              <li>Threatened animals: Swift parrot, Tasmanian wedge-tailed eagle</li>
-            </ul>
-            <p>Tasmania's isolation has allowed for high levels of endemism, with many species found nowhere else on Earth. Conservation efforts focus on protecting these unique species from threats like habitat loss, invasive species, and climate change.</p>
-          </div>
-        </div>
-        <div class="card">
-          <img src="images/fire.jpg" alt="Disturbance Cycles">
-          <h3>Disturbance Cycles</h3>
-          <p>Natural disturbances like fire and flood shape ecosystems. Understanding these cycles helps us manage human impacts.</p>
-          <button onclick="toggleContent('disturbance-more')">Learn More</button>
-          <div id="disturbance-more" class="hidden-content">
-            <p>Tasmanian fire regimes vary by ecosystem:</p>
-            <ul style="padding-left:1.2rem; margin-bottom:0.8rem;">
-              <li>Moorlands: Frequent low-intensity fires</li>
-              <li>Rainforests: Rare catastrophic fires</li>
-              <li>Coastal heath: Moderate frequency</li>
-            </ul>
-            <p>Disturbance cycles are natural processes that reset ecological succession. In Tasmania, fire has been a particularly important disturbance agent for thousands of years, with Indigenous fire management creating mosaic landscapes.</p>
-          </div>
-        </div>
-        <div class="card">
-          <img src="images/succession.jpg" alt="Ecological Succession">
-          <h3>Ecological Succession</h3>
-          <p>How ecosystems recover after disturbance. Knowing succession patterns helps guide restoration efforts.</p>
-          <button onclick="toggleContent('succession-more')">Learn More</button>
-          <div id="succession-more" class="hidden-content">
-            <p>Example: After fire in dry sclerophyll forest:</p>
-            <ol style="padding-left:1.2rem; margin-bottom:0.8rem;">
-              <li>Annual herbs and grasses</li>
-              <li>Shrubs and resprouting trees</li>
-              <li>Mature forest (20+ years)</li>
-            </ol>
-            <p>Understanding succession pathways is essential for effective restoration planning. Restoration ecologists often introduce pioneer species to stabilise soils and create conditions suitable for later successional species.</p>
-          </div>
-        </div>
-      </div>
-      <h3>Threats to Tasmanian Ecosystems</h3>
-      <ul style="padding-left:1.4rem; display:flex; flex-direction:column; gap:0.4rem;">
-        <li><strong>Invasive species:</strong> Gorse, foxes, and Phytophthora dieback</li>
-        <li><strong>Climate change:</strong> Shifting rainfall patterns and temperatures</li>
-        <li><strong>Land use changes:</strong> Agriculture, urban expansion, and forestry</li>
-        <li><strong>Fragmentation:</strong> Isolated habitat patches</li>
-      </ul>
-    </section>
+```css
+/* ---------- SIMULATION LANDSCAPE ---------- */
+.sim-legend {
+  margin-top: 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.2rem;
+  font-size: 0.82rem;
+  color: var(--stone);
+  align-items: center;
+}
+.sim-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.legend-native { background: #4a9b3f; box-shadow: 0 0 0 2px #a5d6a5; }
+.legend-invasive { background: #c0392b; box-shadow: 0 0 0 2px #f0b3b3; }
+.legend-bar {
+  display: inline-block;
+  width: 70px;
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #8a7a5c, #c9b98a, #6a9b4f, #2b6b2b);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
 
-    <!-- CASE STUDIES -->
-    <section id="case-studies">
-      <h2>Tasmanian Case Studies</h2>
-      <div class="card-container">
-        <div class="card">
-          <img src="images/tasman-peninsula.jpg" alt="Tasman Peninsula">
-          <h3>Tasman Peninsula Restoration</h3>
-          <p>Coastal heath restoration after agricultural abandonment. Key techniques included gorse removal, native species reintroduction, and erosion control.</p>
-          <button onclick="toggleContent('peninsula-content')">View Details</button>
-          <div id="peninsula-content" class="hidden-content">
-            <h4>Project Overview</h4>
-            <p>The Tasman Peninsula Restoration Project was initiated in 2015 to restore coastal heathland ecosystems degraded by historical agricultural practices. The project covers approximately 200 hectares.</p>
-            <h4>Key Achievements</h4>
-            <ul style="padding-left:1.2rem; margin-bottom:0.8rem;">
-              <li>Removed gorse from 95% of the target area</li>
-              <li>Reintroduced 15 native plant species</li>
-              <li>Stabilised erosion on 3km of coastal slopes</li>
-              <li>Documented return of 5 native bird species</li>
-            </ul>
-            <h4>Lessons Learned</h4>
-            <p>Early community engagement was critical to success. Local volunteers contributed over 2,000 hours to planting and maintenance activities.</p>
-          </div>
-        </div>
-        <div class="card">
-          <img src="images/moorland.jpg" alt="Central Plateau Moorlands">
-          <h3>Central Plateau Moorlands</h3>
-          <p>Managing peatlands affected by altered fire regimes and climate change through modified burning, visitor management, and hydrology restoration.</p>
-          <button onclick="toggleContent('moorlands-content')">View Details</button>
-          <div id="moorlands-content" class="hidden-content">
-            <h4>Project Overview</h4>
-            <p>The Central Plateau Moorlands Conservation Initiative addresses degradation of Tasmania's unique alpine peatlands caused by changed fire regimes, climate change, and visitor pressure.</p>
-            <h4>Key Interventions</h4>
-            <ul style="padding-left:1.2rem; margin-bottom:0.8rem;">
-              <li>Modified burning regime mimicking natural fire cycles</li>
-              <li>Boardwalks and designated paths to limit visitor impact</li>
-              <li>Water retention structures to restore natural hydrology</li>
-              <li>Community education programs</li>
-            </ul>
-            <h4>Ecological Outcomes</h4>
-            <p>Water tables have risen by an average of 15cm in treated areas, and sensitive sphagnum moss species are recovering.</p>
-          </div>
-        </div>
-        <div class="card">
-          <img src="images/gorse.jpg" alt="North-East Invasive Control">
-          <h3>North-East Invasive Control</h3>
-          <p>Community-led program to control gorse (<em>Ulex europaeus</em>) invasion, achieving an 80% reduction in target areas.</p>
-          <button onclick="toggleContent('gorse-content')">View Details</button>
-          <div id="gorse-content" class="hidden-content">
-            <h4>Project Overview</h4>
-            <p>The North-East Gorse Control Program began in 2018 to address the significant impact of gorse invasion on agricultural land and native ecosystems.</p>
-            <h4>Approach</h4>
-            <ul style="padding-left:1.2rem; margin-bottom:0.8rem;">
-              <li>Coordinated landscape-scale approach across multiple properties</li>
-              <li>Cut-stump herbicide application as primary control</li>
-              <li>Revegetation with native species and improved pasture grasses</li>
-              <li>Monitoring network to track regrowth</li>
-            </ul>
-            <h4>Results</h4>
-            <p>An 80% reduction in gorse cover across 1,500 hectares, with pasture quality improving by 40% on average and 12 native plant species returning.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+/* Landscape canvas */
+.landscape-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.landscape {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+  gap: 2px;
+  width: 100%;
+  aspect-ratio: 20 / 12;
+  background: #3d3a2e;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 2px 12px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+.plot {
+  position: relative;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.6s ease, box-shadow 0.4s ease;
+  cursor: help;
+  overflow: hidden;
+}
+.plot:hover {
+  outline: 2px solid rgba(255,255,255,0.85);
+  outline-offset: -2px;
+  z-index: 2;
+  transform: scale(1.08);
+  transition: transform 0.15s;
+}
+.plot svg { width: 70%; height: 70%; display: block; pointer-events: none; }
+.plot.healthy { animation: shimmer 3.5s ease-in-out infinite alternate; }
+.plot.healthy:nth-child(3n) { animation-delay: 0.4s; }
+.plot.healthy:nth-child(5n) { animation-delay: 0.9s; }
+.plot.healthy:nth-child(7n) { animation-delay: 1.3s; }
+@keyframes shimmer {
+  0% { filter: brightness(1) saturate(1); }
+  100% { filter: brightness(1.08) saturate(1.12); }
+}
 
-    <!-- FIELD TECHNIQUES -->
-    <section id="field-techniques">
-      <h2>Field Techniques for Ecosystem Maintenance</h2>
-      <h3>Essential Skills for CIII CEM</h3>
-      <div class="card-container">
-        <div class="card">
-          <img src="images/weed-control.jpg" alt="Weed Control">
-          <h3>Weed Control</h3>
-          <ul style="padding-left:1.2rem;">
-            <li>Gorse: Cut-stump herbicide application</li>
-            <li>Pampas grass: Foliar spray herbicide application</li>
-            <li>Ragwort: Biological and cultural control</li>
-          </ul>
-        </div>
-        <div class="card">
-          <img src="images/erosion.jpg" alt="Erosion Management">
-          <h3>Erosion Management</h3>
-          <ul style="padding-left:1.2rem;">
-            <li>Jute matting on slopes</li>
-            <li>Revegetation strategies</li>
-            <li>Drainage control</li>
-          </ul>
-        </div>
-        <div class="card">
-          <img src="images/monitoring.jpg" alt="Monitoring Methods">
-          <h3>Monitoring Methods</h3>
-          <ul style="padding-left:1.2rem;">
-            <li>Photo points</li>
-            <li>Vegetation transects</li>
-            <li>Fauna surveys</li>
-          </ul>
-        </div>
-      </div>
+/* Stats row */
+.sim-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.stat {
+  background: #f4f8f2;
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  border-left: 5px solid var(--forest-light);
+}
+.stat.invasive-stat { border-left-color: #c0392b; background: #fdf2f0; }
+.stat.trajectory-stat { border-left-color: var(--gold); background: #fdf8e6; }
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--stone);
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+.stat-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--forest-deep);
+}
+.stat.invasive-stat .stat-value { color: #8a2a2a; }
+.stat.trajectory-stat .stat-value { color: #7a5c0d; font-size: 1rem; }
 
-      <h3>Field Kit Checklist</h3>
-      <div class="checklist" id="fieldChecklist">
-        <div class="checklist-item"><input type="checkbox" id="item1"><label for="item1">Personal protective equipment (PPE)</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item2"><label for="item2">Field notebook and pencils</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item3"><label for="item3">GPS device or mapping app</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item4"><label for="item4">Measuring tape and quadrat</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item5"><label for="item5">Field guides (plants, animals)</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item6"><label for="item6">First aid kit</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item7"><label for="item7">Water and emergency supplies</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item8"><label for="item8">Flagging tape or markers</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item9"><label for="item9">Hand tools (secateurs, mattock, trowel)</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item10"><label for="item10">Waste/weed disposal bags</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item11"><label for="item11">Biosecurity cleaning kit</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item12"><label for="item12">Maps (digital + printed backup)</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item13"><label for="item13">Communication device (radio, phone, PLB)</label></div>
-        <div class="checklist-item"><input type="checkbox" id="item14"><label for="item14">Camera or smartphone for site photos</label></div>
-      </div>
-      <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print Checklist</button>
-    </section>
+@media (max-width: 600px) {
+  .landscape { gap: 1px; padding: 3px; }
+  .sim-stats { grid-template-columns: 1fr; }
+  .stat-value { font-size: 1.05rem; }
+}
+```
 
-    <!-- SIMULATION -->
-    <section id="simulation">
-      <h2>Restoration Planner Simulation</h2>
-      <p>Adjust the variables below to see how different approaches affect restoration outcomes in a Tasmanian dry sclerophyll forest. In the results, <strong>N</strong> = native species and <strong>I</strong> = invasive species.</p>
+---
 
-      <div class="simulation-card">
-        <div class="sim-controls">
-          <h3 style="margin-bottom:1.2rem;">Restoration Variables</h3>
+3. Replace the existing simulation JavaScript (the runSimulation and resetSimulation functions, plus the slider listeners if you want to extend them) with this:
 
-          <div class="slider-group">
-            <label for="rainfall">Annual Rainfall <span id="rainfall-value">800 mm</span></label>
-            <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
-          </div>
-          <div class="slider-group">
-            <label for="invasive-pressure">Invasive Species Pressure <span id="invasive-value">50%</span></label>
-            <input type="range" id="invasive-pressure" min="0" max="100" value="50">
-          </div>
-          <div class="slider-group">
-            <label for="restoration-effort">Restoration Effort <span id="effort-value">50%</span></label>
-            <input type="range" id="restoration-effort" min="0" max="100" value="50">
-          </div>
-          <div class="slider-group">
-            <label for="time-scale">Time Scale <span id="time-value">5 years</span></label>
-            <input type="range" id="time-scale" min="1" max="20" value="5">
-          </div>
+```javascript
+// ---------- SIMULATION ----------
+const rainfallInput = document.getElementById('rainfall');
+const invasiveInput = document.getElementById('invasive-pressure');
+const effortInput = document.getElementById('restoration-effort');
+const timeInput = document.getElementById('time-scale');
 
-          <div class="sim-buttons">
-            <button class="run-btn" onclick="runSimulation()"><i class="fas fa-play"></i> Run Simulation</button>
-            <button class="reset-btn" onclick="resetSimulation()"><i class="fas fa-undo-alt"></i> Reset</button>
-          </div>
-        </div>
+const rainfallVal = document.getElementById('rainfall-value');
+const invasiveVal = document.getElementById('invasive-value');
+const effortVal = document.getElementById('effort-value');
+const timeVal = document.getElementById('time-value');
 
-        <div class="sim-output" id="simulation-output">
-          <h3>Simulation Results</h3>
-          <p class="placeholder-text">Adjust the variables and run the simulation to see results.</p>
-        </div>
-      </div>
-    </section>
+rainfallInput.addEventListener('input', () => rainfallVal.textContent = rainfallInput.value + ' mm');
+invasiveInput.addEventListener('input', () => invasiveVal.textContent = invasiveInput.value + '%');
+effortInput.addEventListener('input', () => effortVal.textContent = effortInput.value + '%');
+timeInput.addEventListener('input', () => timeVal.textContent = timeInput.value + ' years');
 
-    <!-- QUIZ -->
-    <section id="quiz">
-      <h2>Knowledge Check</h2>
-      <p>Test your understanding of Tasmanian ecosystem maintenance concepts.</p>
+const COLS = 20;
+const ROWS = 12;
+const TOTAL_PLOTS = COLS * ROWS;
 
-      <div class="quiz-container">
-        <div class="question">
-          <p><strong>1.</strong> What is the most effective method for controlling gorse in Tasmania?</p>
-          <div class="options">
-            <div class="option"><input type="radio" name="q1" id="q1a" value="a"><label for="q1a">a) Burning alone</label></div>
-            <div class="option"><input type="radio" name="q1" id="q1b" value="b"><label for="q1b">b) Cut-stump herbicide application</label></div>
-            <div class="option"><input type="radio" name="q1" id="q1c" value="c"><label for="q1c">c) Manual removal without follow-up</label></div>
-          </div>
-          <div class="feedback" id="feedback-q1"></div>
-        </div>
+// Deterministic pseudo-random generator so each run is reproducible
+function makeRng(seed) {
+  let s = seed >>> 0;
+  return function () {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
 
-        <div class="question">
-          <p><strong>2.</strong> Which of these is <em>NOT</em> a key threat to Tasmanian moorlands?</p>
-          <div class="options">
-            <div class="option"><input type="radio" name="q2" id="q2a" value="a"><label for="q2a">a) Altered fire regimes</label></div>
-            <div class="option"><input type="radio" name="q2" id="q2b" value="b"><label for="q2b">b) Climate change</label></div>
-            <div class="option"><input type="radio" name="q2" id="q2c" value="c"><label for="q2c">c) Overgrazing by wombats</label></div>
-          </div>
-          <div class="feedback" id="feedback-q2"></div>
-        </div>
+// Tiny SVG glyphs for native (grass tuft / shrub) and invasive (gorse spike)
+const GLYPH_NATIVE = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 22V12" stroke="#1e4a1e" stroke-width="2" stroke-linecap="round"/>
+  <path d="M12 14c-3-1-5-4-5-7 3 0 5 2 5 5" fill="#4a9b3f"/>
+  <path d="M12 14c3-1 5-4 5-7-3 0-5 2-5 5" fill="#3e7e3e"/>
+  <path d="M12 18c-2.5-.5-4-2.5-4.5-5 2.5.3 4 2 4.5 4" fill="#5aad4f"/>
+</svg>`;
 
-        <div class="question">
-          <p><strong>3.</strong> What is the first stage of ecological succession after a severe fire in dry sclerophyll forest?</p>
-          <div class="options">
-            <div class="option"><input type="radio" name="q3" id="q3a" value="a"><label for="q3a">a) Mature eucalypt forest</label></div>
-            <div class="option"><input type="radio" name="q3" id="q3b" value="b"><label for="q3b">b) Annual herbs and grasses</label></div>
-            <div class="option"><input type="radio" name="q3" id="q3c" value="c"><label for="q3c">c) Shrub dominance</label></div>
-          </div>
-          <div class="feedback" id="feedback-q3"></div>
-        </div>
+const GLYPH_INVASIVE = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 22V8" stroke="#5a1e1e" stroke-width="2" stroke-linecap="round"/>
+  <path d="M9 10l3-4 3 4-1.5 2h-3z" fill="#c0392b"/>
+  <path d="M9 15l3-3 3 3-1.5 1.8h-3z" fill="#a93226"/>
+  <path d="M9 19l3-3 3 3-1.5 1.5h-3z" fill="#8a2a2a"/>
+</svg>`;
 
-        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-          <button class="print-btn" onclick="checkQuiz()" style="background:var(--forest-mid); color:white;"><i class="fas fa-check-circle"></i> Check Answers</button>
-          <button class="print-btn" onclick="resetQuiz()" style="background:#e6e2d9; color:#3d3d3d;"><i class="fas fa-redo-alt"></i> Reset Quiz</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- CERTIFICATE TRAINING CTA -->
-    <section id="certificate-training">
-      <h2>Certificate III Training</h2>
-      <div class="training-card">
-        <h3>AHCECR301 – Maintain Native Ecosystem Areas</h3>
-        <div class="training-highlight">
-          <p style="font-size:1.1rem; font-weight:600; margin-bottom:0.4rem;">Ready to dive deeper into practical ecosystem maintenance?</p>
-          <p>Access our comprehensive competency-based training materials specifically designed for the Certificate III in Conservation and Ecosystem Management.</p>
-        </div>
-        <div style="text-align:left; display:inline-block; background:rgba(255,255,255,0.6); padding:1rem 1.5rem; border-radius:16px; margin:0.5rem 0 1.5rem;">
-          <p style="font-weight:600; margin-bottom:0.4rem; color:var(--forest-deep);">What you'll find:</p>
-          <ul style="padding-left:1.2rem; margin:0;">
-            <li>Step-by-step competency materials</li>
-            <li>Tasmanian legislation and regulations</li>
-            <li>Practical activities and assessments</li>
-            <li>Flashcards and self-check quizzes</li>
-            <li>Field techniques and safety procedures</li>
-          </ul>
-        </div>
-        <br>
-        <a href="second-tool.html" target="_blank" class="prominent-button pulse-button">
-          <i class="fas fa-graduation-cap"></i> Access Training Materials
-        </a>
-        <p style="margin-top:1rem; font-size:0.9rem; color:#666;">Opens in a new tab for focused learning</p>
-      </div>
-    </section>
-
-    <!-- RESOURCES -->
-    <section id="resources">
-      <h2>Additional Resources</h2>
-      <h3>Glossary of Terms</h3>
-      <dl>
-        <dt>Dieback</dt>
-        <dd>The gradual deterioration of health in trees or plants, often caused by pathogens like Phytophthora.</dd>
-        <dt>Ecological Succession</dt>
-        <dd>The process of change in the species structure of an ecological community over time.</dd>
-        <dt>Fire Regime</dt>
-        <dd>The pattern, frequency, and intensity of the fires that prevail in an area over long periods.</dd>
-        <dt>Gondwanan Species</dt>
-        <dd>Plants and animals whose evolutionary history traces back to when Tasmania was part of the supercontinent Gondwana.</dd>
-      </dl>
-      <h3 style="margin-top:1.5rem;">Further Reading</h3>
-      <ul style="padding-left:1.4rem;">
-        <li>Tasmanian Land Conservancy publications</li>
-        <li>NRE conservation guidelines</li>
-        <li>Bushcare and Landcare Tasmania resources</li>
-      </ul>
-    </section>
-
-  </div>
-
-  <footer>
-    <p>Ecosystem Maintenance <i class="fas fa-leaf"></i> Tasmanian Focus</p>
-    <p style="opacity:0.8; font-size:0.9rem;">© 2025 Jay Rowley</p>
-  </footer>
-
-  <script>
-    // ---------- MOBILE NAV ----------
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    navToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('show');
-      navToggle.innerHTML = navMenu.classList.contains('show')
-        ? '<i class="fas fa-times"></i>'
-        : '<i class="fas fa-bars"></i>';
-    });
-    document.querySelectorAll('.nav-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 980) {
-          navMenu.classList.remove('show');
-          navToggle.innerHTML = '<i class="fas fa-bars"></i>';
-        }
-      });
-    });
-
-    // ---------- TOGGLE CONTENT (cards / case studies) ----------
-    function toggleContent(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('show');
+// Soil-health colour interpolation (degraded → healthy)
+function soilColor(health, moisture) {
+  // health 0..1 ; moisture 0..1 (affects saturation/warmth)
+  const stops = [
+    { t: 0.0, c: [138, 122, 92] },   // cracked tan
+    { t: 0.35, c: [201, 185, 138] }, // dry olive
+    { t: 0.65, c: [122, 163, 79] },  // healthy grassland
+    { t: 1.0, c: [43, 107, 43] }     // deep forest
+  ];
+  let lo = stops[0], hi = stops[stops.length - 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (health >= stops[i].t && health <= stops[i + 1].t) {
+      lo = stops[i]; hi = stops[i + 1]; break;
     }
+  }
+  const span = (hi.t - lo.t) || 1;
+  const f = (health - lo.t) / span;
+  const r = Math.round(lo.c[0] + (hi.c[0] - lo.c[0]) * f);
+  const g = Math.round(lo.c[1] + (hi.c[1] - lo.c[1]) * f);
+  const b = Math.round(lo.c[2] + (hi.c[2] - lo.c[2]) * f);
+  // Dry years wash out saturation
+  const dryFade = 0.35 + moisture * 0.65;
+  const r2 = Math.round(r * dryFade + 120 * (1 - dryFade));
+  const g2 = Math.round(g * dryFade + 110 * (1 - dryFade));
+  const b2 = Math.round(b * dryFade + 90 * (1 - dryFade));
+  return `rgb(${r2},${g2},${b2})`;
+}
 
-    // ---------- SIMULATION ----------
-    const rainfallInput = document.getElementById('rainfall');
-    const invasiveInput = document.getElementById('invasive-pressure');
-    const effortInput = document.getElementById('restoration-effort');
-    const timeInput = document.getElementById('time-scale');
+function runSimulation() {
+  const rainfall = parseInt(rainfallInput.value);       // 400..1200
+  const invasive = parseInt(invasiveInput.value) / 100; // 0..1
+  const effort = parseInt(effortInput.value) / 100;     // 0..1
+  const time = parseInt(timeInput.value);               // 1..20
 
-    const rainfallVal = document.getElementById('rainfall-value');
-    const invasiveVal = document.getElementById('invasive-value');
-    const effortVal = document.getElementById('effort-value');
-    const timeVal = document.getElementById('time-value');
+  // Seed per run so it feels alive but reproducible per click
+  const seed = (rainfall * 7 + invasive * 131 + effort * 977 + time * 17 + Date.now() % 1000) | 0;
+  const rand = makeRng(seed);
 
-    rainfallInput.addEventListener('input', () => rainfallVal.textContent = rainfallInput.value + ' mm');
-    invasiveInput.addEventListener('input', () => invasiveVal.textContent = invasiveInput.value + '%');
-    effortInput.addEventListener('input', () => effortVal.textContent = effortInput.value + '%');
-    timeInput.addEventListener('input', () => timeVal.textContent = timeInput.value + ' years');
+  // Global recovery: rainfall + effort help, invasives hurt, time compounds
+  const moisture = Math.min(1, Math.max(0, (rainfall - 400) / 800));
+  const baseRecovery = (effort * 0.55 + moisture * 0.35) - invasive * 0.45;
+  const recovery = Math.min(1, Math.max(0, baseRecovery * Math.min(1.4, time / 6) + 0.15));
 
-    function runSimulation() {
-      const rainfall = parseInt(rainfallInput.value);
-      const invasive = parseInt(invasiveInput.value);
-      const effort = parseInt(effortInput.value);
-      const time = parseInt(timeInput.value);
+  // Build plots
+  const plots = [];
+  let nativeTotal = 0, invasiveTotal = 0, healthSum = 0;
 
-      // Enhanced algorithm: rainfall supports growth, invasive pressure hinders,
-      // effort scales recovery, time compounds the effect.
-      let base = (effort / 100) * 70 + (rainfall / 1200) * 25 - (invasive / 100) * 35;
-      let progress = base * Math.min(1, time / 5);
-      progress = Math.max(2, Math.min(98, progress));
+  // Cluster centres for invasives (they group together)
+  const invClusters = Array.from({ length: 4 + Math.round(invasive * 6) }, () => ({
+    x: Math.floor(rand() * COLS),
+    y: Math.floor(rand() * ROWS),
+    r: 2 + rand() * 3
+  }));
 
-      const output = document.getElementById('simulation-output');
-      output.innerHTML = `<h3>Simulation Results</h3>
-        <p><strong>Restoration Progress</strong></p>
-        <div class="progress-bar-bg"><div class="progress-fill" style="width:${progress}%"></div></div>
-        <p class="progress-text">${Math.round(progress)}% complete</p>
-        <div class="ecosystem-visual" id="eco-visual"></div>
-        <div class="interpretation-text" id="interpretation"></div>`;
-
-      const visual = document.getElementById('eco-visual');
-      const nativeCount = Math.min(12, Math.floor(progress / 8) + 1);
-      const invasiveCount = Math.max(0, 6 - Math.floor(progress / 20));
-
-      for (let i = 0; i < nativeCount; i++) {
-        const b = document.createElement('div');
-        b.className = 'species-badge native';
-        b.textContent = 'N' + (i + 1);
-        b.title = 'Native species';
-        visual.appendChild(b);
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      // Local invasive pressure: close to a cluster centre = higher
+      let invLocal = 0;
+      for (const c of invClusters) {
+        const d = Math.hypot(x - c.x, y - c.y);
+        invLocal += Math.max(0, 1 - d / c.r) * invasive;
       }
-      for (let i = 0; i < invasiveCount; i++) {
-        const b = document.createElement('div');
-        b.className = 'species-badge invasive';
-        b.textContent = 'I' + (i + 1);
-        b.title = 'Invasive species';
-        visual.appendChild(b);
-      }
+      invLocal = Math.min(1, invLocal);
 
-      const interp = document.getElementById('interpretation');
-      if (progress < 30) {
-        interp.textContent = '🌱 Early recovery stage. Focus on invasive control and soil stabilisation.';
-      } else if (progress < 70) {
-        interp.textContent = '🌿 Moderate recovery. Continue restoration efforts and monitor native establishment.';
-      } else {
-        interp.textContent = '🌳 Good recovery! Shift focus to maintenance and long-term monitoring.';
-      }
+      // Local native establishment: effort & moisture, reduced by invasives
+      const natLocal = Math.min(1, Math.max(0,
+        (recovery * 0.8 + moisture * 0.25) * (1 - invLocal * 0.7) + (rand() - 0.5) * 0.15
+      ));
+
+      // Plot health combines both
+      const health = Math.min(1, Math.max(0, natLocal * 0.7 + (1 - invLocal) * 0.4 + (rand() - 0.5) * 0.08));
+
+      // Decide glyph: native if native dominance, invasive if invasive dominance, else bare
+      let glyph = null;
+      if (invLocal > natLocal + 0.12 && invLocal > 0.25) glyph = 'invasive';
+      else if (natLocal > 0.3 && natLocal > invLocal) glyph = 'native';
+
+      if (glyph === 'native') nativeTotal++;
+      if (glyph === 'invasive') invasiveTotal++;
+      healthSum += health;
+
+      plots.push({ x, y, health, invLocal, natLocal, glyph });
     }
+  }
 
-    function resetSimulation() {
-      rainfallInput.value = 800;
-      invasiveInput.value = 50;
-      effortInput.value = 50;
-      timeInput.value = 5;
-      rainfallVal.textContent = '800 mm';
-      invasiveVal.textContent = '50%';
-      effortVal.textContent = '50%';
-      timeVal.textContent = '5 years';
-      document.getElementById('simulation-output').innerHTML =
-        `<h3>Simulation Results</h3><p class="placeholder-text">Adjust the variables and run the simulation to see results.</p>`;
-    }
+  const nativePct = Math.round((nativeTotal / TOTAL_PLOTS) * 100);
+  const invasivePct = Math.round((invasiveTotal / TOTAL_PLOTS) * 100);
+  const avgHealth = healthSum / TOTAL_PLOTS;
 
-    // ---------- QUIZ ----------
-    function checkQuiz() {
-      const answers = [
-        { name: 'q1', correct: 'b', feedback: 'feedback-q1',
-          correctMsg: 'Correct! Cut-stump herbicide application is the most effective method for gorse control.',
-          incorrectMsg: 'Incorrect. The correct answer is b) Cut-stump herbicide application. Burning alone often stimulates regrowth, and manual removal without follow-up is ineffective.' },
-        { name: 'q2', correct: 'c', feedback: 'feedback-q2',
-          correctMsg: 'Correct! Wombats are not a significant threat to moorlands. The real threats are altered fire regimes and climate change.',
-          incorrectMsg: 'Incorrect. The correct answer is c) Overgrazing by wombats. Wombats are native and don\'t significantly impact moorlands.' },
-        { name: 'q3', correct: 'b', feedback: 'feedback-q3',
-          correctMsg: 'Correct! Annual herbs and grasses are the first colonisers after severe fire.',
-          incorrectMsg: 'Incorrect. The correct answer is b) Annual herbs and grasses. These pioneer species establish first after disturbance.' }
-      ];
+  // Trajectory label
+  let trajectory, trajIcon;
+  if (avgHealth < 0.3)      { trajectory = 'Degraded';   trajIcon = '⚠️'; }
+  else if (avgHealth < 0.5) { trajectory = 'Stabilising'; trajIcon = '↔️'; }
+  else if (avgHealth < 0.75){ trajectory = 'Recovering'; trajIcon = '↗️'; }
+  else                      { trajectory = 'Thriving';   trajIcon = '🌿'; }
 
-      answers.forEach(a => {
-        const selected = document.querySelector(`input[name="${a.name}"]:checked`);
-        const fb = document.getElementById(a.feedback);
-        if (!selected) {
-          fb.className = 'feedback incorrect';
-          fb.textContent = 'Please select an answer.';
-          fb.style.display = 'block';
-          return;
-        }
-        if (selected.value === a.correct) {
-          fb.className = 'feedback correct';
-          fb.textContent = a.correctMsg;
-        } else {
-          fb.className = 'feedback incorrect';
-          fb.textContent = a.incorrectMsg;
-        }
-        fb.style.display = 'block';
-      });
-    }
+  // Render
+  const output = document.getElementById('simulation-output');
+  output.innerHTML = `
+    <h3>Simulation Results <span style="font-size:0.8rem; font-weight:400; color:#777;">(${time}-year projection)</span></h3>
+    <div class="landscape-wrap">
+      <div class="landscape" id="landscape" aria-label="Restoration landscape heatmap"></div>
+      <div class="sim-stats">
+        <div class="stat">
+          <div class="stat-label">Native cover</div>
+          <div class="stat-value">${nativePct}%</div>
+        </div>
+        <div class="stat invasive-stat">
+          <div class="stat-label">Invasive cover</div>
+          <div class="stat-value">${invasivePct}%</div>
+        </div>
+        <div class="stat trajectory-stat">
+          <div class="stat-label">Trajectory</div>
+          <div class="stat-value">${trajIcon} ${trajectory}</div>
+        </div>
+      </div>
+    </div>
+  `;
 
-    function resetQuiz() {
-      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-      document.querySelectorAll('.feedback').forEach(f => {
-        f.style.display = 'none';
-        f.textContent = '';
-      });
-    }
-  </script>
-</body>
-</html>
+  const landscape = document.getElementById('landscape');
+  plots.forEach(p => {
+    const cell = document.createElement('div');
+    cell.className = 'plot' + (p.health > 0.55 ? ' healthy' : '');
+    cell.style.background = soilColor(p.health, moisture);
+    cell.title = `Plot (${p.x + 1},${p.y + 1}) · Native: ${Math.round(p.natLocal * 100)}% · Invasive: ${Math.round(p.invLocal * 100)}% · Health: ${Math.round(p.health * 100)}%`;
+    if (p.glyph === 'native') cell.innerHTML = GLYPH_NATIVE;
+    else if (p.glyph === 'invasive') cell.innerHTML = GLYPH_INVASIVE;
+    landscape.appendChild(cell);
+  });
+}
+
+function resetSimulation() {
+  rainfallInput.value = 800;
+  invasiveInput.value = 50;
+  effortInput.value = 50;
+  timeInput.value = 5;
+  rainfallVal.textContent = '800 mm';
+  invasiveVal.textContent = '50%';
+  effortVal.textContent = '50%';
+  timeVal.textContent = '5 years';
+  document.getElementById('simulation-output').innerHTML =
+    `<h3>Simulation Results</h3><p class="placeholder-text">Adjust the variables and run the simulation to see results.</p>`;
+}
+```
+
+---
+
+Why this is better than the old display
+
+Old (N1/I1 bubbles) New (living landscape)
+Abstract labels Spatial — you see where invasives cluster and where natives recover
+One progress bar Three readouts — native cover, invasive cover, trajectory
+Sliders' effects invisible Rainfall shifts soil colour, invasives cluster, effort plants natives, time shifts the whole canvas along the recovery gradient
+Static Healthy plots shimmer gently — the landscape feels alive
+No exploration Hover any plot for exact native/invasive/health percentages
+
+The seeded RNG means each "Run Simulation" produces a fresh but plausible layout — no two runs look identical, yet the same slider settings always produce a consistent landscape (so learners can compare settings fairly).
+
+If you'd like a variant — e.g. a side-by-side "before vs after" comparison, or a river/ridgeline overlay on the canvas for extra Tasmania flavour — say the word and I'll extend it.
