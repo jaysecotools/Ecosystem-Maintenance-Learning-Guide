@@ -860,7 +860,10 @@
         <div class="checklist-item"><input type="checkbox" id="item13"><label for="item13">Communication device (radio, phone, PLB)</label></div>
         <div class="checklist-item"><input type="checkbox" id="item14"><label for="item14">Camera or smartphone for site photos</label></div>
       </div>
-      <button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print Checklist</button>
+      <!-- Print Checklist: see @media print block in <style> — only the checklist is output -->
+      <button class="print-btn" onclick="window.print()">
+        <i class="fas fa-print"></i> Print Checklist
+      </button>
     </section>
 
 <!-- SIMULATION -->
