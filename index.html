@@ -557,6 +557,87 @@
   .sim-stats { grid-template-columns: 1fr; }
   .stat-value { font-size: 1.05rem; }
 }
+
+    /* ---------- PRINT: CHECKLIST ONLY ---------- */
+@media print {
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Reveal only the checklist and its immediate container */
+  .checklist,
+  .checklist * {
+    visibility: visible;
+  }
+
+  /* Reveal the section heading so the printout has a title */
+  #field-techniques h2,
+  #field-techniques h3 {
+    visibility: visible;
+  }
+
+  /* Position the checklist at the top-left of the page */
+  .checklist {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    grid-template-columns: none;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Print-friendly title above the list */
+  .checklist::before {
+    content: "Field Kit Checklist — CIII CEM";
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e3a1e;
+    border-bottom: 3px solid #e6b422;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.8rem;
+    visibility: visible;
+  }
+
+  /* Each item as a clean line with a visible empty box */
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    background: none;
+    border-bottom: 1px dotted #bbb;
+    page-break-inside: avoid;
+  }
+
+  .checklist-item input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #000;
+  }
+
+  .checklist-item label {
+    font-size: 0.95rem;
+    color: #000;
+  }
+
+  /* Hide the print button itself and any other UI chrome */
+  .print-btn,
+  .nav-wrapper,
+  .hero,
+  footer {
+    display: none !important;
+  }
+
+  /* Prevent awkward page breaks */
+  section {
+    page-break-inside: auto;
+  }
+}
   </style>
 </head>
 <body>
