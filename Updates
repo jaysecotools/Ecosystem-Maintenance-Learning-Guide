@@ -1,392 +1,122 @@
-Great instinct — the "N1 / I1" bubble approach is dated and doesn't communicate much. Let me suggest something better before I write it.
+Good question — and the answer is: fix it, don't remove it. A print-friendly checklist is genuinely useful for a Certificate III field resource (learners take these into the field), and the fix is small. Removing the button loses real value.
 
-My recommendation: A living landscape canvas with layered visual metaphors
+The cleanest approach is a dedicated @media print stylesheet that hides everything except the checklist, and adds a proper heading and checkbox-friendly formatting. That way the button stays, the printout is genuinely useful, and no other part of the page is affected on screen.
 
-Instead of abstract badges, render an actual top-down landscape grid — a 20×12 "land parcel" — where each cell is a small plot of land. Each cell's appearance is driven by three variables simultaneously:
-
-1. Colour (soil health gradient) — deep forest green → olive → dusty tan → cracked grey. This is the heatmap layer, but grounded in something recognisable (healthy land vs. degraded land).
-2. Species glyphs — instead of "N1/I1" text, small SVG icons: a native shrub/grass tuft (green) and an invasive gorse spike (red/orange), scattered with density proportional to native vs. invasive coverage. Cells with high invasives get red-tinted soil, cells with high natives get green tint.
-3. Pulse / shimmer — healthy cells subtly animate (CSS keyframes) so the landscape feels alive; degraded cells are static and flat. This is the "2026" touch without being gratuitous.
-
-Plus three live stat readouts below the canvas: Native Cover %, Invasive Cover %, and a Trajectory indicator (Declining / Stabilising / Recovering / Thriving) — because a single progress bar hides the ecology. Rainfall, effort, and invasive pressure each modulate specific visual dimensions, so the user sees each slider do something distinct:
-
-· Rainfall → baseline soil colour saturation (drier = more tan/brown tones)
-· Invasive pressure → how many invasive glyphs spawn and how aggressively they cluster
-· Restoration effort → how many native glyphs spawn and how quickly cells recover colour
-· Time → how far along the recovery gradient the whole canvas has shifted
-
-Every Run re-generates the grid with a seeded random layout, so it feels alive but reproducible per run. I'll also add a legend and hover tooltips on cells (e.g. "Plot 4-7 · Native: high · Invasive: moderate").
-
-Here's the replacement — just the simulation section HTML and its JavaScript, plus a small CSS block. Swap these into your existing file. Everything else (nav, other sections, quiz) stays identical.
+Here's the fix — two small additions to your existing file.
 
 ---
 
-1. Replace the entire <section id="simulation"> block with this:
-
-```html
-<!-- SIMULATION -->
-<section id="simulation">
-  <h2>Restoration Planner Simulation</h2>
-  <p>Adjust the variables below to see how different approaches affect restoration outcomes in a Tasmanian dry sclerophyll forest. Each plot in the landscape reflects its own balance of native and invasive cover, soil condition, and moisture.</p>
-
-  <div class="simulation-card">
-    <div class="sim-controls">
-      <h3 style="margin-bottom:1.2rem;">Restoration Variables</h3>
-
-      <div class="slider-group">
-        <label for="rainfall">Annual Rainfall <span id="rainfall-value">800 mm</span></label>
-        <input type="range" id="rainfall" min="400" max="1200" value="800" step="50">
-      </div>
-      <div class="slider-group">
-        <label for="invasive-pressure">Invasive Species Pressure <span id="invasive-value">50%</span></label>
-        <input type="range" id="invasive-pressure" min="0" max="100" value="50">
-      </div>
-      <div class="slider-group">
-        <label for="restoration-effort">Restoration Effort <span id="effort-value">50%</span></label>
-        <input type="range" id="restoration-effort" min="0" max="100" value="50">
-      </div>
-      <div class="slider-group">
-        <label for="time-scale">Time Scale <span id="time-value">5 years</span></label>
-        <input type="range" id="time-scale" min="1" max="20" value="5">
-      </div>
-
-      <div class="sim-buttons">
-        <button class="run-btn" onclick="runSimulation()"><i class="fas fa-play"></i> Run Simulation</button>
-        <button class="reset-btn" onclick="resetSimulation()"><i class="fas fa-undo-alt"></i> Reset</button>
-      </div>
-
-      <!-- Legend -->
-      <div class="sim-legend">
-        <span><i class="legend-dot legend-native"></i> Native</span>
-        <span><i class="legend-dot legend-invasive"></i> Invasive</span>
-        <span class="legend-gradient"><i class="legend-bar"></i> Soil health: degraded → healthy</span>
-      </div>
-    </div>
-
-    <div class="sim-output" id="simulation-output">
-      <h3>Simulation Results</h3>
-      <p class="placeholder-text">Adjust the variables and run the simulation to see results.</p>
-    </div>
-  </div>
-</section>
-```
-
----
-
-2. Add this CSS block (anywhere in your <style>, e.g. just before the closing </style>):
+1. Add this CSS block to your <style> section (near the end, before the closing </style>):
 
 ```css
-/* ---------- SIMULATION LANDSCAPE ---------- */
-.sim-legend {
-  margin-top: 1.4rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem 1.2rem;
-  font-size: 0.82rem;
-  color: var(--stone);
-  align-items: center;
-}
-.sim-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
-.legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-.legend-native { background: #4a9b3f; box-shadow: 0 0 0 2px #a5d6a5; }
-.legend-invasive { background: #c0392b; box-shadow: 0 0 0 2px #f0b3b3; }
-.legend-bar {
-  display: inline-block;
-  width: 70px;
-  height: 10px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #8a7a5c, #c9b98a, #6a9b4f, #2b6b2b);
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
-}
+/* ---------- PRINT: CHECKLIST ONLY ---------- */
+@media print {
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+  }
 
-/* Landscape canvas */
-.landscape-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.landscape {
-  display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(12, 1fr);
-  gap: 2px;
-  width: 100%;
-  aspect-ratio: 20 / 12;
-  background: #3d3a2e;
-  padding: 4px;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 2px 12px rgba(0,0,0,0.35), 0 6px 18px rgba(0,0,0,0.12);
-  overflow: hidden;
-}
-.plot {
-  position: relative;
-  border-radius: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.6s ease, box-shadow 0.4s ease;
-  cursor: help;
-  overflow: hidden;
-}
-.plot:hover {
-  outline: 2px solid rgba(255,255,255,0.85);
-  outline-offset: -2px;
-  z-index: 2;
-  transform: scale(1.08);
-  transition: transform 0.15s;
-}
-.plot svg { width: 70%; height: 70%; display: block; pointer-events: none; }
-.plot.healthy { animation: shimmer 3.5s ease-in-out infinite alternate; }
-.plot.healthy:nth-child(3n) { animation-delay: 0.4s; }
-.plot.healthy:nth-child(5n) { animation-delay: 0.9s; }
-.plot.healthy:nth-child(7n) { animation-delay: 1.3s; }
-@keyframes shimmer {
-  0% { filter: brightness(1) saturate(1); }
-  100% { filter: brightness(1.08) saturate(1.12); }
-}
+  /* Reveal only the checklist and its immediate container */
+  .checklist,
+  .checklist * {
+    visibility: visible;
+  }
 
-/* Stats row */
-.sim-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
-}
-.stat {
-  background: #f4f8f2;
-  border-radius: var(--radius-sm);
-  padding: 0.7rem 0.9rem;
-  border-left: 5px solid var(--forest-light);
-}
-.stat.invasive-stat { border-left-color: #c0392b; background: #fdf2f0; }
-.stat.trajectory-stat { border-left-color: var(--gold); background: #fdf8e6; }
-.stat-label {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--stone);
-  font-weight: 600;
-  margin-bottom: 0.15rem;
-}
-.stat-value {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--forest-deep);
-}
-.stat.invasive-stat .stat-value { color: #8a2a2a; }
-.stat.trajectory-stat .stat-value { color: #7a5c0d; font-size: 1rem; }
+  /* Reveal the section heading so the printout has a title */
+  #field-techniques h2,
+  #field-techniques h3 {
+    visibility: visible;
+  }
 
-@media (max-width: 600px) {
-  .landscape { gap: 1px; padding: 3px; }
-  .sim-stats { grid-template-columns: 1fr; }
-  .stat-value { font-size: 1.05rem; }
+  /* Position the checklist at the top-left of the page */
+  .checklist {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    grid-template-columns: none;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Print-friendly title above the list */
+  .checklist::before {
+    content: "Field Kit Checklist — CIII CEM";
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1e3a1e;
+    border-bottom: 3px solid #e6b422;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.8rem;
+    visibility: visible;
+  }
+
+  /* Each item as a clean line with a visible empty box */
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    background: none;
+    border-bottom: 1px dotted #bbb;
+    page-break-inside: avoid;
+  }
+
+  .checklist-item input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #000;
+  }
+
+  .checklist-item label {
+    font-size: 0.95rem;
+    color: #000;
+  }
+
+  /* Hide the print button itself and any other UI chrome */
+  .print-btn,
+  .nav-wrapper,
+  .hero,
+  footer {
+    display: none !important;
+  }
+
+  /* Prevent awkward page breaks */
+  section {
+    page-break-inside: auto;
+  }
 }
 ```
 
 ---
 
-3. Replace the existing simulation JavaScript (the runSimulation and resetSimulation functions, plus the slider listeners if you want to extend them) with this:
+2. Change the print button to use the browser's print dialog (no change needed to the onclick, but I'd recommend this small tweak):
 
-```javascript
-// ---------- SIMULATION ----------
-const rainfallInput = document.getElementById('rainfall');
-const invasiveInput = document.getElementById('invasive-pressure');
-const effortInput = document.getElementById('restoration-effort');
-const timeInput = document.getElementById('time-scale');
+Your current button is:
 
-const rainfallVal = document.getElementById('rainfall-value');
-const invasiveVal = document.getElementById('invasive-value');
-const effortVal = document.getElementById('effort-value');
-const timeVal = document.getElementById('time-value');
+```html
+<button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print Checklist</button>
+```
 
-rainfallInput.addEventListener('input', () => rainfallVal.textContent = rainfallInput.value + ' mm');
-invasiveInput.addEventListener('input', () => invasiveVal.textContent = invasiveInput.value + '%');
-effortInput.addEventListener('input', () => effortVal.textContent = effortInput.value + '%');
-timeInput.addEventListener('input', () => timeVal.textContent = timeInput.value + ' years');
+That's already correct — window.print() triggers the print dialog, and the @media print block above filters what actually prints. No JS change needed. If you'd like, you can add a small comment in the HTML so future-you remembers why it works:
 
-const COLS = 20;
-const ROWS = 12;
-const TOTAL_PLOTS = COLS * ROWS;
-
-// Deterministic pseudo-random generator so each run is reproducible
-function makeRng(seed) {
-  let s = seed >>> 0;
-  return function () {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
-
-// Tiny SVG glyphs for native (grass tuft / shrub) and invasive (gorse spike)
-const GLYPH_NATIVE = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 22V12" stroke="#1e4a1e" stroke-width="2" stroke-linecap="round"/>
-  <path d="M12 14c-3-1-5-4-5-7 3 0 5 2 5 5" fill="#4a9b3f"/>
-  <path d="M12 14c3-1 5-4 5-7-3 0-5 2-5 5" fill="#3e7e3e"/>
-  <path d="M12 18c-2.5-.5-4-2.5-4.5-5 2.5.3 4 2 4.5 4" fill="#5aad4f"/>
-</svg>`;
-
-const GLYPH_INVASIVE = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 22V8" stroke="#5a1e1e" stroke-width="2" stroke-linecap="round"/>
-  <path d="M9 10l3-4 3 4-1.5 2h-3z" fill="#c0392b"/>
-  <path d="M9 15l3-3 3 3-1.5 1.8h-3z" fill="#a93226"/>
-  <path d="M9 19l3-3 3 3-1.5 1.5h-3z" fill="#8a2a2a"/>
-</svg>`;
-
-// Soil-health colour interpolation (degraded → healthy)
-function soilColor(health, moisture) {
-  // health 0..1 ; moisture 0..1 (affects saturation/warmth)
-  const stops = [
-    { t: 0.0, c: [138, 122, 92] },   // cracked tan
-    { t: 0.35, c: [201, 185, 138] }, // dry olive
-    { t: 0.65, c: [122, 163, 79] },  // healthy grassland
-    { t: 1.0, c: [43, 107, 43] }     // deep forest
-  ];
-  let lo = stops[0], hi = stops[stops.length - 1];
-  for (let i = 0; i < stops.length - 1; i++) {
-    if (health >= stops[i].t && health <= stops[i + 1].t) {
-      lo = stops[i]; hi = stops[i + 1]; break;
-    }
-  }
-  const span = (hi.t - lo.t) || 1;
-  const f = (health - lo.t) / span;
-  const r = Math.round(lo.c[0] + (hi.c[0] - lo.c[0]) * f);
-  const g = Math.round(lo.c[1] + (hi.c[1] - lo.c[1]) * f);
-  const b = Math.round(lo.c[2] + (hi.c[2] - lo.c[2]) * f);
-  // Dry years wash out saturation
-  const dryFade = 0.35 + moisture * 0.65;
-  const r2 = Math.round(r * dryFade + 120 * (1 - dryFade));
-  const g2 = Math.round(g * dryFade + 110 * (1 - dryFade));
-  const b2 = Math.round(b * dryFade + 90 * (1 - dryFade));
-  return `rgb(${r2},${g2},${b2})`;
-}
-
-function runSimulation() {
-  const rainfall = parseInt(rainfallInput.value);       // 400..1200
-  const invasive = parseInt(invasiveInput.value) / 100; // 0..1
-  const effort = parseInt(effortInput.value) / 100;     // 0..1
-  const time = parseInt(timeInput.value);               // 1..20
-
-  // Seed per run so it feels alive but reproducible per click
-  const seed = (rainfall * 7 + invasive * 131 + effort * 977 + time * 17 + Date.now() % 1000) | 0;
-  const rand = makeRng(seed);
-
-  // Global recovery: rainfall + effort help, invasives hurt, time compounds
-  const moisture = Math.min(1, Math.max(0, (rainfall - 400) / 800));
-  const baseRecovery = (effort * 0.55 + moisture * 0.35) - invasive * 0.45;
-  const recovery = Math.min(1, Math.max(0, baseRecovery * Math.min(1.4, time / 6) + 0.15));
-
-  // Build plots
-  const plots = [];
-  let nativeTotal = 0, invasiveTotal = 0, healthSum = 0;
-
-  // Cluster centres for invasives (they group together)
-  const invClusters = Array.from({ length: 4 + Math.round(invasive * 6) }, () => ({
-    x: Math.floor(rand() * COLS),
-    y: Math.floor(rand() * ROWS),
-    r: 2 + rand() * 3
-  }));
-
-  for (let y = 0; y < ROWS; y++) {
-    for (let x = 0; x < COLS; x++) {
-      // Local invasive pressure: close to a cluster centre = higher
-      let invLocal = 0;
-      for (const c of invClusters) {
-        const d = Math.hypot(x - c.x, y - c.y);
-        invLocal += Math.max(0, 1 - d / c.r) * invasive;
-      }
-      invLocal = Math.min(1, invLocal);
-
-      // Local native establishment: effort & moisture, reduced by invasives
-      const natLocal = Math.min(1, Math.max(0,
-        (recovery * 0.8 + moisture * 0.25) * (1 - invLocal * 0.7) + (rand() - 0.5) * 0.15
-      ));
-
-      // Plot health combines both
-      const health = Math.min(1, Math.max(0, natLocal * 0.7 + (1 - invLocal) * 0.4 + (rand() - 0.5) * 0.08));
-
-      // Decide glyph: native if native dominance, invasive if invasive dominance, else bare
-      let glyph = null;
-      if (invLocal > natLocal + 0.12 && invLocal > 0.25) glyph = 'invasive';
-      else if (natLocal > 0.3 && natLocal > invLocal) glyph = 'native';
-
-      if (glyph === 'native') nativeTotal++;
-      if (glyph === 'invasive') invasiveTotal++;
-      healthSum += health;
-
-      plots.push({ x, y, health, invLocal, natLocal, glyph });
-    }
-  }
-
-  const nativePct = Math.round((nativeTotal / TOTAL_PLOTS) * 100);
-  const invasivePct = Math.round((invasiveTotal / TOTAL_PLOTS) * 100);
-  const avgHealth = healthSum / TOTAL_PLOTS;
-
-  // Trajectory label
-  let trajectory, trajIcon;
-  if (avgHealth < 0.3)      { trajectory = 'Degraded';   trajIcon = '⚠️'; }
-  else if (avgHealth < 0.5) { trajectory = 'Stabilising'; trajIcon = '↔️'; }
-  else if (avgHealth < 0.75){ trajectory = 'Recovering'; trajIcon = '↗️'; }
-  else                      { trajectory = 'Thriving';   trajIcon = '🌿'; }
-
-  // Render
-  const output = document.getElementById('simulation-output');
-  output.innerHTML = `
-    <h3>Simulation Results <span style="font-size:0.8rem; font-weight:400; color:#777;">(${time}-year projection)</span></h3>
-    <div class="landscape-wrap">
-      <div class="landscape" id="landscape" aria-label="Restoration landscape heatmap"></div>
-      <div class="sim-stats">
-        <div class="stat">
-          <div class="stat-label">Native cover</div>
-          <div class="stat-value">${nativePct}%</div>
-        </div>
-        <div class="stat invasive-stat">
-          <div class="stat-label">Invasive cover</div>
-          <div class="stat-value">${invasivePct}%</div>
-        </div>
-        <div class="stat trajectory-stat">
-          <div class="stat-label">Trajectory</div>
-          <div class="stat-value">${trajIcon} ${trajectory}</div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  const landscape = document.getElementById('landscape');
-  plots.forEach(p => {
-    const cell = document.createElement('div');
-    cell.className = 'plot' + (p.health > 0.55 ? ' healthy' : '');
-    cell.style.background = soilColor(p.health, moisture);
-    cell.title = `Plot (${p.x + 1},${p.y + 1}) · Native: ${Math.round(p.natLocal * 100)}% · Invasive: ${Math.round(p.invLocal * 100)}% · Health: ${Math.round(p.health * 100)}%`;
-    if (p.glyph === 'native') cell.innerHTML = GLYPH_NATIVE;
-    else if (p.glyph === 'invasive') cell.innerHTML = GLYPH_INVASIVE;
-    landscape.appendChild(cell);
-  });
-}
-
-function resetSimulation() {
-  rainfallInput.value = 800;
-  invasiveInput.value = 50;
-  effortInput.value = 50;
-  timeInput.value = 5;
-  rainfallVal.textContent = '800 mm';
-  invasiveVal.textContent = '50%';
-  effortVal.textContent = '50%';
-  timeVal.textContent = '5 years';
-  document.getElementById('simulation-output').innerHTML =
-    `<h3>Simulation Results</h3><p class="placeholder-text">Adjust the variables and run the simulation to see results.</p>`;
-}
+```html
+<!-- Print Checklist: see @media print block in <style> — only the checklist is output -->
+<button class="print-btn" onclick="window.print()">
+  <i class="fas fa-print"></i> Print Checklist
+</button>
 ```
 
 ---
 
-Why this is better than the old display
+Why this approach (over commenting out the button)
 
-Old (N1/I1 bubbles) New (living landscape)
-Abstract labels Spatial — you see where invasives cluster and where natives recover
-One progress bar Three readouts — native cover, invasive cover, trajectory
-Sliders' effects invisible Rainfall shifts soil colour, invasives cluster, effort plants natives, time shifts the whole canvas along the recovery gradient
-Static Healthy plots shimmer gently — the landscape feels alive
-No exploration Hover any plot for exact native/invasive/health percentages
+· Learners get a real field resource. A clean checklist with empty boxes and dotted writing lines is exactly the kind of thing a CIII student would take outdoors. The whole point of a checklist is to be printed — hiding that defeats its purpose.
+· No side effects on screen. The @media print rules only fire when printing, so your beautiful on-screen layout is untouched.
+· Fully reversible and self-documenting. If you ever change the checklist HTML, only the @media print block needs updating — nothing else in the page cares.
+· Bonus heading included. The ::before pseudo-element adds a title ("Field Kit Checklist — CIII CEM") that appears only on the printed page, so the printout is self-contained and looks intentional rather than like a stray fragment of a web page.
 
-The seeded RNG means each "Run Simulation" produces a fresh but plausible layout — no two runs look identical, yet the same slider settings always produce a consistent landscape (so learners can compare settings fairly).
-
-If you'd like a variant — e.g. a side-by-side "before vs after" comparison, or a river/ridgeline overlay on the canvas for extra Tasmania flavour — say the word and I'll extend it.
+If you'd prefer the printed version to include a small page footer (e.g. "© 2025 Jay Rowley · CIII CEM"), that's one more line inside the @media print block — say the word and I'll add it.
