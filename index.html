@@ -558,36 +558,51 @@
   .stat-value { font-size: 1.05rem; }
 }
 
-    /* ---------- PRINT: CHECKLIST ONLY ---------- */
+/* ---------- PRINT: CHECKLIST ONLY ---------- */
 @media print {
-  /* Hide everything by default */
-  body * {
-    visibility: hidden;
+  /* Remove everything from layout flow */
+  body > * {
+    display: none !important;
   }
 
-  /* Reveal only the checklist and its immediate container */
-  .checklist,
-  .checklist * {
-    visibility: visible;
+  /* Reveal the ancestor chain of the checklist */
+  body > .container,
+  body > .container > #field-techniques {
+    display: block !important;
   }
 
-  /* Reveal the section heading so the printout has a title */
-  #field-techniques h2,
-  #field-techniques h3 {
-    visibility: visible;
+  /* Hide everything inside the section except the checklist */
+  #field-techniques > * {
+    display: none !important;
   }
 
-  /* Position the checklist at the top-left of the page */
-  .checklist {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: block;
-    grid-template-columns: none;
-    gap: 0;
+  #field-techniques > h3:nth-of-type(2) {   /* "Field Kit Checklist" heading */
+    display: block !important;
+  }
+
+  #field-techniques > .checklist {
+    display: block !important;
+  }
+
+  /* Reset page margins & colours for print */
+  body {
+    background: #fff !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: none;
     padding: 0;
     margin: 0;
+  }
+
+  #field-techniques {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Print-friendly title above the list */
@@ -600,12 +615,11 @@
     border-bottom: 3px solid #e6b422;
     padding-bottom: 0.4rem;
     margin-bottom: 0.8rem;
-    visibility: visible;
   }
 
   /* Each item as a clean line with a visible empty box */
   .checklist-item {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 0.6rem;
     padding: 0.35rem 0;
@@ -625,14 +639,17 @@
     color: #000;
   }
 
-  /* Hide the print button itself and any other UI chrome */
-  .print-btn,
-  .nav-wrapper,
-  .hero,
-  footer {
+  /* Hide the print button */
+  .print-btn {
     display: none !important;
   }
 
+  /* Prevent blank pages from stray margins */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
   /* Prevent awkward page breaks */
   section {
     page-break-inside: auto;
