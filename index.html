@@ -560,109 +560,112 @@
 
 /* ---------- PRINT: CHECKLIST ONLY ---------- */
 @media print {
-  /* Hide EVERYTHING with visibility trick (works better with sticky/fixed parents) */
-  body * {
-    visibility: hidden !important;
-    box-shadow: none !important;
-    animation: none !important;
+  /* Reset page */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    height: auto !important;
   }
 
-  /* Reveal the chain we need */
-  #field-techniques,
-  #field-techniques h3,
-  #field-techniques .checklist,
-  #field-techniques .checklist * {
-    visibility: visible !important;
+  /* Hide the entire document by default */
+  body > * {
+    display: none !important;
   }
 
-  /* Show only the "Field Kit Checklist" heading — the 2nd h3 in the section */
-  #field-techniques > h3 {
-    visibility: hidden !important;
-  }
-  #field-techniques > h3.checklist-heading {
-    visibility: visible !important;
+  /* Reveal ONLY the .container and everything up to the checklist area */
+  body > .container {
+    display: block !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  /* Rip the checklist out of the page flow and pin it to the top */
-  #field-techniques {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
+  /* Hide all sections except field-techniques */
+  .container > section {
+    display: none !important;
+  }
+
+  .container > #field-techniques {
+    display: block !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
+    box-shadow: none !important;
     background: #fff !important;
   }
 
-  #field-techniques .checklist {
-    position: static !important;
+  /* Inside field-techniques, hide everything except the checklist area */
+  #field-techniques > * {
+    display: none !important;
+  }
+
+  #field-techniques > .print-area {
+    display: block !important;
+  }
+
+  /* The print area itself */
+  .print-area {
+    display: block !important;
+  }
+
+  /* Title printed above the checklist */
+  .print-area .checklist-heading {
+    display: block !important;
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    color: #1e3a1e !important;
+    border-bottom: 3px solid #e6b422 !important;
+    padding-bottom: 0.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* The checklist layout for print */
+  .print-area .checklist {
     display: block !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    grid-template-columns: none !important;
+    gap: 0 !important;
   }
 
-  /* Kill the sticky nav — this is the usual culprit for blank pages */
-  .nav-wrapper,
-  .hero,
-  footer,
-  .print-btn {
-    display: none !important;
-  }
-
-  /* Title that only appears on the printed page */
-  .checklist::before {
-    content: "Field Kit Checklist — CIII CEM";
-    display: block;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #1e3a1e;
-    border-bottom: 3px solid #e6b422;
-    padding-bottom: 0.4rem;
-    margin-bottom: 0.8rem;
-    visibility: visible;
-  }
-
-  /* Each item on its own line with a visible empty box */
-  .checklist-item {
+  .print-area .checklist-item {
     display: flex !important;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.35rem 0;
+    padding: 0.4rem 0;
     background: none !important;
     border-bottom: 1px dotted #bbb;
     page-break-inside: avoid;
-    visibility: visible !important;
   }
 
-  .checklist-item input[type="checkbox"] {
+  .print-area .checklist-item input[type="checkbox"] {
     width: 14px;
     height: 14px;
     accent-color: #000;
-    visibility: visible !important;
   }
 
-  .checklist-item label {
+  .print-area .checklist-item label {
     font-size: 0.95rem;
     color: #000;
-    visibility: visible !important;
   }
 
-  /* Reset page-level styles */
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-    background: #fff !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  /* Hide the print button itself */
+  .print-area .print-btn {
+    display: none !important;
   }
 
-  @page {
-    margin: 1.5cm;
+  /* Optional: a small footer under the checklist */
+  .print-area::after {
+    content: "CIII CEM · Tasmanian Ecosystem Maintenance";
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: #888;
+    text-align: center;
   }
 }
-
   </style>
 </head>
 <body>
@@ -868,8 +871,9 @@
         </div>
       </div>
 
-      <h3 class="checklist-heading">Field Kit Checklist</h3>
-      <div class="checklist" id="fieldChecklist">
+<div class="print-area" id="checklistArea">
+  <h3 class="checklist-heading">Field Kit Checklist</h3>
+  <div class="checklist" id="fieldChecklist">
         <div class="checklist-item"><input type="checkbox" id="item1"><label for="item1">Personal protective equipment (PPE)</label></div>
         <div class="checklist-item"><input type="checkbox" id="item2"><label for="item2">Field notebook and pencils</label></div>
         <div class="checklist-item"><input type="checkbox" id="item3"><label for="item3">GPS device or mapping app</label></div>
@@ -886,9 +890,10 @@
         <div class="checklist-item"><input type="checkbox" id="item14"><label for="item14">Camera or smartphone for site photos</label></div>
       </div>
       <!-- Print Checklist: see @media print block in <style> — only the checklist is output -->
-      <button class="print-btn" onclick="window.print()">
-        <i class="fas fa-print"></i> Print Checklist
-      </button>
+  <button class="print-btn" onclick="window.print()">
+    <i class="fas fa-print"></i> Print Checklist
+  </button>
+</div>
     </section>
 
 <!-- SIMULATION -->
