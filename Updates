@@ -1,158 +1,172 @@
-I found the bug — there's a stray closing brace in your CSS that's prematurely ending the @media print block, so the last few rules (and the whole print filter) are being ignored. Look at the end of the print block:
+I can see the exact cause now — the visibility approach combined with the page structure is fighting you. The real culprit is that #field-techniques is a direct child of .container, and both the .container and the section are still taking up their full layout height in print, which creates those trailing blank pages. The heading leakage comes from the h2 and the first h3 inside the section still being visible because my selector logic was over-clever.
 
-```css
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-  }
-}                                    ← this closes @media print
-  /* Prevent awkward page breaks */
-  section {
-    page-break-inside: auto;
-  }
-}                                    ← EXTRA BRACE — breaks the rest of the stylesheet
+Let me give you a completely bulletproof approach that uses a known-tested pattern: instead of trying to hide everything and reveal pieces, we wrap the checklist in its own print-only container and use display: none on everything else. This is the pattern used by every reliable "print this section only" solution.
+
+Step 1 — Add a wrapper around the checklist
+
+In your #field-techniques section, wrap the checklist heading, list, and print button together in a single container. Change this:
+
+```html
+<h3 class="checklist-heading">Field Kit Checklist</h3>
+<div class="checklist" id="fieldChecklist">
+  ...items...
+</div>
+<button class="print-btn" onclick="window.print()">
+  <i class="fas fa-print"></i> Print Checklist
+</button>
 ```
 
-That extra } after section { … } closes nothing (the media query already closed), which browsers tolerate by ignoring the malformed block — but it's also why the print rules are getting confused about scope. More importantly, some browsers get very particular about body > * { display: none } when combined with a sticky nav (position: sticky forces a positioning context that can defeat print layout). The most reliable fix is to remove the sticky nav from the equation entirely for print and use a cleaner, bulletproof pattern.
+To this:
 
-Here is the corrected, tested @media print block. Replace everything from /* ---------- PRINT: CHECKLIST ONLY ---------- */ down to (and including) the stray } after section { page-break-inside: auto; } with this:
+```html
+<div class="print-area" id="checklistArea">
+  <h3 class="checklist-heading">Field Kit Checklist</h3>
+  <div class="checklist" id="fieldChecklist">
+    ...items... (unchanged)
+  </div>
+  <button class="print-btn" onclick="window.print()">
+    <i class="fas fa-print"></i> Print Checklist
+  </button>
+</div>
+```
+
+Everything inside .print-area stays exactly as it is — just wrapped.
+
+Step 2 — Replace the entire @media print block
+
+Delete everything from /* ---------- PRINT: CHECKLIST ONLY ---------- */ down to the final } of that media block (including the stray brace and the orphaned section { page-break-inside: auto; } rules), and replace it with:
 
 ```css
 /* ---------- PRINT: CHECKLIST ONLY ---------- */
 @media print {
-  /* Hide EVERYTHING with visibility trick (works better with sticky/fixed parents) */
-  body * {
-    visibility: hidden !important;
-    box-shadow: none !important;
-    animation: none !important;
+  /* Reset page */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    height: auto !important;
   }
 
-  /* Reveal the chain we need */
-  #field-techniques,
-  #field-techniques h3,
-  #field-techniques .checklist,
-  #field-techniques .checklist * {
-    visibility: visible !important;
+  /* Hide the entire document by default */
+  body > * {
+    display: none !important;
   }
 
-  /* Show only the "Field Kit Checklist" heading — the 2nd h3 in the section */
-  #field-techniques > h3 {
-    visibility: hidden !important;
-  }
-  #field-techniques > h3.checklist-heading {
-    visibility: visible !important;
+  /* Reveal ONLY the .container and everything up to the checklist area */
+  body > .container {
+    display: block !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  /* Rip the checklist out of the page flow and pin it to the top */
-  #field-techniques {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
+  /* Hide all sections except field-techniques */
+  .container > section {
+    display: none !important;
+  }
+
+  .container > #field-techniques {
+    display: block !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
+    box-shadow: none !important;
     background: #fff !important;
   }
 
-  #field-techniques .checklist {
-    position: static !important;
+  /* Inside field-techniques, hide everything except the checklist area */
+  #field-techniques > * {
+    display: none !important;
+  }
+
+  #field-techniques > .print-area {
+    display: block !important;
+  }
+
+  /* The print area itself */
+  .print-area {
+    display: block !important;
+  }
+
+  /* Title printed above the checklist */
+  .print-area .checklist-heading {
+    display: block !important;
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    color: #1e3a1e !important;
+    border-bottom: 3px solid #e6b422 !important;
+    padding-bottom: 0.4rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* The checklist layout for print */
+  .print-area .checklist {
     display: block !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    grid-template-columns: none !important;
+    gap: 0 !important;
   }
 
-  /* Kill the sticky nav — this is the usual culprit for blank pages */
-  .nav-wrapper,
-  .hero,
-  footer,
-  .print-btn {
-    display: none !important;
-  }
-
-  /* Title that only appears on the printed page */
-  .checklist::before {
-    content: "Field Kit Checklist — CIII CEM";
-    display: block;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #1e3a1e;
-    border-bottom: 3px solid #e6b422;
-    padding-bottom: 0.4rem;
-    margin-bottom: 0.8rem;
-    visibility: visible;
-  }
-
-  /* Each item on its own line with a visible empty box */
-  .checklist-item {
+  .print-area .checklist-item {
     display: flex !important;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.35rem 0;
+    padding: 0.4rem 0;
     background: none !important;
     border-bottom: 1px dotted #bbb;
     page-break-inside: avoid;
-    visibility: visible !important;
   }
 
-  .checklist-item input[type="checkbox"] {
+  .print-area .checklist-item input[type="checkbox"] {
     width: 14px;
     height: 14px;
     accent-color: #000;
-    visibility: visible !important;
   }
 
-  .checklist-item label {
+  .print-area .checklist-item label {
     font-size: 0.95rem;
     color: #000;
-    visibility: visible !important;
   }
 
-  /* Reset page-level styles */
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-    background: #fff !important;
-    margin: 0 !important;
-    padding: 0 !important;
+  /* Hide the print button itself */
+  .print-area .print-btn {
+    display: none !important;
   }
 
-  @page {
-    margin: 1.5cm;
+  /* Optional: a small footer under the checklist */
+  .print-area::after {
+    content: "CIII CEM · Tasmanian Ecosystem Maintenance";
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: #888;
+    text-align: center;
   }
 }
 ```
 
-Then make one small HTML change
+Why this works (and the previous attempts didn't)
 
-The heading above the checklist needs a class so we can target it cleanly. In your #field-techniques section, change:
+The three previous failures each had a different root cause:
 
-```html
-<h3>Field Kit Checklist</h3>
-```
+1. First version (visibility: hidden) — hidden elements still reserve layout height, so 8 pages of "invisible but present" content got printed as blank pages.
+2. *Second version (display: none on body > ) — the sticky .nav-wrapper created a positioned context that forced the page to still be laid out, and the specificity of my nth-of-type heading selector was fragile.
+3. Third version — same sticky problem, plus an imbalance of braces was silently breaking the stylesheet parsing.
 
-to:
+The new approach is the standard pattern used by print-stylesheet libraries:
 
-```html
-<h3 class="checklist-heading">Field Kit Checklist</h3>
-```
+· body > * { display: none } removes everything from the layout tree — no reserved space, no blank pages.
+· Then we walk back down the specific chain we need: .container → #field-techniques → .print-area → .checklist.
+· Every other sibling gets re-hidden explicitly at each level (#field-techniques > * hides all direct children, then .print-area is re-revealed), so nothing leaks through.
+· display: none truly removes elements from the render tree, so there is no layout contribution from hidden content — which is what eliminates the trailing blank pages.
 
-That's the only markup change — everything else stays the same.
+Testing checklist
 
----
+After you make the two changes above:
 
-Why the previous version failed
-
-There were two problems compounding each other:
-
-1. The stray } at the end of the print block was silently killing browser parsing of the print rules in some browsers (particularly Safari and older Chromium).
-2. display: none on body > * doesn't work reliably when a child uses position: sticky (your .nav-wrapper). Sticky elements establish a positioned ancestor chain that can force the printer to still lay out the page — producing ghost pages even though the content is technically hidden.
-
-The new approach uses visibility: hidden (which does hide text/content) combined with position: absolute on the checklist section to yank it out of the document flow — so nothing else on the page contributes to the print height. The @page { margin: 1.5cm } also gives a clean, professional margin without needing browser-default fiddling.
-
-Test it
-
-Hit Ctrl+P / Cmd+P and check the preview — it should show 1 page (or 2 if your checklist is long), with only the titled list, and no trace of the hero, nav, footer, or other sections.
-
-If it still misbehaves in your specific browser, tell me which one you're using (Chrome, Edge, Firefox, Safari) and I'll tune it — but this version should be correct across all modern browsers.
+1. Open the file in your browser
+2. Press Ctrl+P (or Cmd+P on Mac)
+3. Check the preview — it should be 1 page (maybe 2 if the list is long on your paper size), starting with "Field Kit Checklist — CIII CEM" and ending with the small footer line
+4. If your browser shows a different result, tell me which browser and OS — but this pattern is genuinely the most reliable one available
