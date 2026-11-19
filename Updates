@@ -1,44 +1,53 @@
-Good question — and the answer is: fix it, don't remove it. A print-friendly checklist is genuinely useful for a Certificate III field resource (learners take these into the field), and the fix is small. Removing the button loses real value.
+Ah — classic print issue. The visibility: hidden approach hides content but the elements still occupy space in the page flow, so the browser generates empty pages for all the rest of the document. The fix is to switch from visibility to display: none on everything, then explicitly display: block (or appropriate) on just the checklist and its heading. That removes the hidden content from the layout entirely, so no trailing blank pages.
 
-The cleanest approach is a dedicated @media print stylesheet that hides everything except the checklist, and adds a proper heading and checkbox-friendly formatting. That way the button stays, the printout is genuinely useful, and no other part of the page is affected on screen.
-
-Here's the fix — two small additions to your existing file.
-
----
-
-1. Add this CSS block to your <style> section (near the end, before the closing </style>):
+Replace the previous @media print block with this one:
 
 ```css
 /* ---------- PRINT: CHECKLIST ONLY ---------- */
 @media print {
-  /* Hide everything by default */
-  body * {
-    visibility: hidden;
+  /* Remove everything from layout flow */
+  body > * {
+    display: none !important;
   }
 
-  /* Reveal only the checklist and its immediate container */
-  .checklist,
-  .checklist * {
-    visibility: visible;
+  /* Reveal the ancestor chain of the checklist */
+  body > .container,
+  body > .container > #field-techniques {
+    display: block !important;
   }
 
-  /* Reveal the section heading so the printout has a title */
-  #field-techniques h2,
-  #field-techniques h3 {
-    visibility: visible;
+  /* Hide everything inside the section except the checklist */
+  #field-techniques > * {
+    display: none !important;
   }
 
-  /* Position the checklist at the top-left of the page */
-  .checklist {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: block;
-    grid-template-columns: none;
-    gap: 0;
+  #field-techniques > h3:nth-of-type(2) {   /* "Field Kit Checklist" heading */
+    display: block !important;
+  }
+
+  #field-techniques > .checklist {
+    display: block !important;
+  }
+
+  /* Reset page margins & colours for print */
+  body {
+    background: #fff !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: none;
     padding: 0;
     margin: 0;
+  }
+
+  #field-techniques {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* Print-friendly title above the list */
@@ -51,12 +60,11 @@ Here's the fix — two small additions to your existing file.
     border-bottom: 3px solid #e6b422;
     padding-bottom: 0.4rem;
     margin-bottom: 0.8rem;
-    visibility: visible;
   }
 
   /* Each item as a clean line with a visible empty box */
   .checklist-item {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 0.6rem;
     padding: 0.35rem 0;
@@ -76,47 +84,48 @@ Here's the fix — two small additions to your existing file.
     color: #000;
   }
 
-  /* Hide the print button itself and any other UI chrome */
-  .print-btn,
-  .nav-wrapper,
-  .hero,
-  footer {
+  /* Hide the print button */
+  .print-btn {
     display: none !important;
   }
 
-  /* Prevent awkward page breaks */
-  section {
-    page-break-inside: auto;
+  /* Prevent blank pages from stray margins */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
   }
 }
 ```
 
 ---
 
-2. Change the print button to use the browser's print dialog (no change needed to the onclick, but I'd recommend this small tweak):
+Why the previous version leaked pages
 
-Your current button is:
+visibility: hidden keeps the element's box in the layout — so all your sections, cards, footer, etc. still reserved their full height on the page, producing blank pages 2–8. display: none removes them from the flow entirely, so only the checklist's real height is printed.
+
+What this version does
+
+1. body > * → display: none kills the hero, nav, footer, and every section in one hit.
+2. Then it re-reveals only the chain needed: .container → #field-techniques → its checklist heading and the checklist itself.
+3. Everything else inside #field-techniques (the card grids, essential skills, etc.) stays hidden.
+4. Section padding, margins, shadows, and border-radius are stripped so the checklist starts at the top of the page and the page fits cleanly.
+5. html, body { height: auto; overflow: visible; } prevents the sticky nav's fixed positioning from creating an extra tall page.
+
+One thing to verify
+
+The selector #field-techniques > h3:nth-of-type(2) targets the "Field Kit Checklist" heading specifically — but only if that heading is a direct child of the section and is the second <h3> in it. In your current markup, the structure is:
 
 ```html
-<button class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print Checklist</button>
+<section id="field-techniques">
+  <h2>Field Techniques…</h2>
+  <h3>Essential Skills for CIII CEM</h3>   <!-- 1st h3 -->
+  <div class="card-container">…</div>
+  <h3>Field Kit Checklist</h3>             <!-- 2nd h3 -->
+  <div class="checklist">…</div>
+  <button class="print-btn">…</button>
+</section>
 ```
 
-That's already correct — window.print() triggers the print dialog, and the @media print block above filters what actually prints. No JS change needed. If you'd like, you can add a small comment in the HTML so future-you remembers why it works:
+So h3:nth-of-type(2) is correct. If you ever add or reorder headings, adjust that number — or, cleaner, give the heading an id (e.g. id="checklist-heading") and target #checklist-heading instead. That would be the more robust long-term fix; happy to swap it in if you'd like.
 
-```html
-<!-- Print Checklist: see @media print block in <style> — only the checklist is output -->
-<button class="print-btn" onclick="window.print()">
-  <i class="fas fa-print"></i> Print Checklist
-</button>
-```
-
----
-
-Why this approach (over commenting out the button)
-
-· Learners get a real field resource. A clean checklist with empty boxes and dotted writing lines is exactly the kind of thing a CIII student would take outdoors. The whole point of a checklist is to be printed — hiding that defeats its purpose.
-· No side effects on screen. The @media print rules only fire when printing, so your beautiful on-screen layout is untouched.
-· Fully reversible and self-documenting. If you ever change the checklist HTML, only the @media print block needs updating — nothing else in the page cares.
-· Bonus heading included. The ::before pseudo-element adds a title ("Field Kit Checklist — CIII CEM") that appears only on the printed page, so the printout is self-contained and looks intentional rather than like a stray fragment of a web page.
-
-If you'd prefer the printed version to include a small page footer (e.g. "© 2025 Jay Rowley · CIII CEM"), that's one more line inside the @media print block — say the word and I'll add it.
+Test it once with Print Preview rather than actually printing — that'll show you immediately whether the page count is now 1 (or 2, depending on checklist length) instead of 9.
